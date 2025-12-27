@@ -1,0 +1,43 @@
+name: Sync and Create PRs
+
+on:
+  push:
+    branches:
+      - development
+      - uat
+      - 'hotfix/*'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr-to-uat:
+    if: ${{ github.ref == 'refs/heads/development' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create PR to uat
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: uat
+          head: development
+          title: 'Sync: development → uat'
+          body: 'Automated PR to sync development into uat for testing.'
+          labels: automated-sync
+
+  create-pr-to-master:
+    if: ${{ github.ref == 'refs/heads/uat' || startsWith(github.ref, 'refs/heads/hotfix/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create PR to master
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: master
+          head: ${{ github.ref_name }}
+          title: 'Sync: ${{ github.ref_name }} → master'
+          body: 'Automated PR from ${{ github.ref_name }} to master after testing.'
+          labels: automated-sync
