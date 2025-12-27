@@ -1,0 +1,45 @@
+.auth-container {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+ 
+  background: var(--app-bg);
+  overflow: hidden;
+}
+
+.auth-card {
+  max-width: 520px;
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 12px;
+  box-shadow: var(--elevation-2);
+}
+
+.auth-content { padding: 1.25rem 1.25rem; background: transparent; }
+
+.auth-title { font-size: 1.45rem; }
+.auth-sub { font-size: 1rem; opacity: .94; }
+
+
+.full-width { margin-top: 0.6rem; }
+
+.submit-btn { margin-top: 1rem; display:flex; justify-content:center; align-items:center; height:48px; }
+
+button[mat-raised-button] { border-radius: 10px; }
+
+/* Match login button appearance: gradient background, padding and shadow */
+button[mat-raised-button] {
+  border-radius: 10px;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-primary);
+  color: var(--text-inverse);
+  box-shadow: 0 8px 30px rgba(51,102,255,0.14);
+}
+
+.error-message, .success-message { margin-bottom: .75rem; }
+
+.auth-card-actions { justify-content:center; gap: .6rem; padding-bottom: 1rem; }
+.auth-link { color: var(--color-primary); font-weight: 600; text-decoration:none; }
+

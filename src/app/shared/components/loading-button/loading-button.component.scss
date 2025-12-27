@@ -1,0 +1,91 @@
+// Loading button theme-aware styling
+.loading-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  
+  // Base button styling
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  
+  // Theme-aware colors
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  border: 1px solid transparent;
+  
+  // Interactive states
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-600);
+    transform: translateY(-1px);
+    box-shadow: var(--elevation-md);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--elevation-sm);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  
+  // Disabled state
+  &:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  // Loading state
+  &.loading {
+    cursor: wait;
+    
+    .button-text {
+      opacity: 0.7;
+    }
+  }
+}
+
+// Spinner styling
+.loading-spinner {
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  
+  mat-spinner {
+    width: 16px !important;
+    height: 16px !important;
+    
+    svg circle {
+      stroke: currentColor;
+    }
+  }
+}
+
+// Button variants
+.loading-button.secondary {
+  background-color: var(--color-surface-100);
+  color: var(--text-primary);
+  border-color: var(--color-surface-300);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-200);
+    border-color: var(--color-surface-400);
+  }
+}
+
+.loading-button.outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-50);
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "submit": "Sign In",
+      "subtitle": "Manage your finances, events and tasks in one place",
+      "loading": "Signing in..."
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join and organize your family life with ease",
+      "fullName": "Full name",
+      "relation": "Relationship",
+      "dob": "Date of birth",
+      "phone": "Phone",
+      "confirm": "Confirm password",
+      "submit": "Create account",
+      "link": "Create account",
+      "loading": "Creating account...",
+      "passwordPlaceholder": "Create a secure password",
+      "showPasswordAria": "Show or hide password",
+      "confirmError": "Confirm your password",
+      "mismatchError": "Passwords do not match",
+      "phoneError": "Enter a valid phone number (10-15 digits)",
+      "haveAccount": "Already have an account? Sign in"
+    },
+    "reset": {
+      "request": {
+        "title": "Reset Password",
+        "subtitle": "You will receive a 6-digit code by email",
+        "submit": "Send Code",
+        "loading": "Sending code...",
+        "backToLogin": "Back to sign in"
+      },
+      "verify": {
+        "title": "Verify Code",
+        "subtitle": "Enter the 6-digit code you received",
+        "submit": "Change Password",
+        "code": "6-digit code",
+        "codeLabel": "Code (6 digits)",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm password",
+        "loading": "Verifying...",
+        "backToRequest": "Request new code",
+        "backToLogin": "Back to sign in"
+      }
+    },
+    "email": "Email",
+    "password": "Password",
+    "loading": "Loading...",
+    "logout": "Sign Out"
+  },
+  "layout": {
+    "panel": "Panel",
+    "appTitle": "My Application",
+    "familySection": "Family"
+  },
+  "tools": {
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "spanish": "Español",
+    "english": "English"
+  },
+  "family": {
+    "title": "Family members",
+    "add": "Add member",
+    "birth": "Date of birth",
+    "relation": "Relationship",
+    "accountType": "Account type",
+    "editor": "Editor",
+    "readOnly": "Read only",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "actions": {
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update"
+  },
+  "errors": {
+    "required": {
+      "email": "Email is required",
+      "password": "Password is required",
+      "fullName": "Full name is required",
+      "code": "Code is required",
+      "newPassword": "New password is required",
+      "confirmPassword": "Confirm password is required"
+    },
+    "invalid": {
+      "email": "Enter a valid email",
+      "code": "Code must be 6 digits",
+      "codePattern": "Enter 6 digits",
+      "passwordMatch": "Passwords do not match"
+    },
+    "minLength": {
+      "password": "Password must be at least 8 characters",
+      "passwordShort": "Minimum 8 characters"
+    }
+  },
+  "aria": {
+    "toggleMenu": "Toggle menu",
+    "selectLanguage": "Select language",
+    "toggleTheme": "Toggle theme",
+    "tools": "Tools",
+    "loginForm": "Login form",
+    "registerForm": "Registration form",
+    "resetForm": "Password reset form",
+    "verifyForm": "Verification form",
+    "formFields": "Form fields"
+  }
+}

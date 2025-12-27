@@ -1,0 +1,74 @@
+<mat-sidenav-container class="layout-sidenav-container">
+  <mat-sidenav #s mode="side" [(opened)]="opened" class="layout-sidenav">
+    <div class="sidenav-header">
+      <h3 i18nText="layout.appTitle"></h3>
+    </div>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/app/family" routerLinkActive="active">
+        <div class="nav-item-content">
+          <mat-icon aria-hidden="true">people</mat-icon>
+          <span i18nText="layout.familySection"></span>
+        </div>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="layout-content">
+    <mat-toolbar color="primary" class="layout-toolbar">
+      <button mat-icon-button (click)="opened = !opened" [attr.aria-label]="'aria.toggleMenu' | translate">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="spacer"></span>
+      <button mat-icon-button [matMenuTriggerFor]="toolsMenu" [attr.aria-label]="'aria.tools' | translate">
+        <mat-icon>settings</mat-icon>
+      </button>
+      <mat-menu #toolsMenu="matMenu" panelClass="modern-tools-menu">
+        <div class="menu-section language-section">
+          <div class="menu-title">
+            <mat-icon class="section-icon">language</mat-icon>
+            {{ 'tools.language' | translate }}
+          </div>
+          <button mat-menu-item (click)="setLanguage('es')" 
+                  [class.selected]="currentLanguage() === 'es'"
+                  class="language-item">
+            <span class="flag-container" [innerHTML]="getFlagSvg('es')"></span>
+            <span class="language-text">{{ 'tools.spanish' | translate }}</span>
+            <mat-icon *ngIf="currentLanguage() === 'es'" class="menu-check">check_circle</mat-icon>
+          </button>
+          <button mat-menu-item (click)="setLanguage('en')" 
+                  [class.selected]="currentLanguage() === 'en'"
+                  class="language-item">
+            <span class="flag-container" [innerHTML]="getFlagSvg('en')"></span>
+            <span class="language-text">{{ 'tools.english' | translate }}</span>
+            <mat-icon *ngIf="currentLanguage() === 'en'" class="menu-check">check_circle</mat-icon>
+          </button>
+        </div>
+        <mat-divider class="menu-divider"></mat-divider>
+        <div class="menu-section theme-section">
+          <div class="menu-title">
+            <mat-icon class="section-icon">palette</mat-icon>
+            {{ 'tools.theme' | translate }}
+          </div>
+          <div class="theme-toggle-container">
+            <mat-icon class="theme-icon light-icon" [class.active]="!isDark()">light_mode</mat-icon>
+            <mat-slide-toggle 
+              [checked]="isDark()" 
+              (change)="setTheme($event.checked ? 'dark' : 'light')"
+              class="modern-theme-toggle"
+              color="primary">
+            </mat-slide-toggle>
+            <mat-icon class="theme-icon dark-icon" [class.active]="isDark()">dark_mode</mat-icon>
+          </div>
+          <div class="theme-label">
+            {{ isDark() ? ('tools.dark' | translate) : ('tools.light' | translate) }}
+          </div>
+        </div>
+      </mat-menu>
+      <button mat-button routerLink="/auth/login" i18nText="auth.logout" class="logout-button"></button>
+    </mat-toolbar>
+
+    <div class="layout-main">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

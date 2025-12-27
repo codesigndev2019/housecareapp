@@ -1,0 +1,223 @@
+// ============================================
+// CSS CUSTOM PROPERTIES (CSS Variables)
+// Theme-aware design tokens
+// ============================================
+
+// ============================================
+// LIGHT THEME (Default)
+// ============================================
+:root {
+  // Primary colors - Professional blue
+  --color-primary: #2563eb;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  
+  // Accent colors - Emerald for success and growth
+  --color-accent: #059669;
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+  
+  // Semantic colors
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: var(--color-primary);
+  
+  // Neutral surface colors - Sophisticated grays
+  --color-surface: #ffffff;
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
+  
+  // Background and layout
+  --color-background: #ffffff;
+  --color-surface-elevated: #f8fafc;
+  --color-surface-border: #e2e8f0;
+  --color-surface-hover: #f1f5f9;
+  --color-primary-subtle: var(--color-primary-50);
+  --sidenav-bg: #f8fafc;
+  --app-bg: #ffffff;
+  
+  // Enhanced shadows for depth
+  --elevation-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --elevation-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --elevation-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --elevation-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  // Menu and overlay
+  --menu-bg: rgba(255, 255, 255, 0.95);
+  --menu-bg-solid: #ffffff;
+  --menu-border: rgba(0, 0, 0, 0.08);
+  --menu-shadow: var(--elevation-xl);
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  
+  // Border radius scale
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  
+  // Typography colors with proper contrast
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  --text-accent: var(--color-primary);
+  --text-dark: #0f172a;
+  
+  // Page background - white for light theme
+  --bg-gradient: #ffffff;
+  
+  // Auth area tokens
+  --auth-hero-bg: linear-gradient(180deg, var(--color-primary-50), var(--color-surface-50));
+  
+  // Interactive states
+  --focus-ring: rgba(37, 99, 235, 0.24);
+  --hover-bg: rgba(0, 0, 0, 0.04);
+  --hover-bg-subtle: rgba(0, 0, 0, 0.02);
+  --active-bg: rgba(0, 0, 0, 0.08);
+  --selected-bg: rgba(37, 99, 235, 0.1);
+  --disabled-bg: var(--color-surface-100);
+  --disabled-text: var(--color-surface-400);
+  
+  // Theme toggle
+  --toggle-track: var(--color-surface-200);
+  --toggle-thumb: #ffffff;
+  --toggle-track-checked: var(--color-primary);
+  --toggle-thumb-checked: #ffffff;
+  
+  // Scrollbar
+  --scrollbar-track: rgba(15,23,42,0.04);
+  --scrollbar-thumb: rgba(0,0,0,0.12);
+  --scrollbar-thumb-hover: rgba(0,0,0,0.18);
+}
+
+// ============================================
+// DARK THEME [data-theme="dark"]
+// ============================================
+[data-theme="dark"] {
+  // Primary colors - Brighter for dark backgrounds
+  --color-primary: #3b82f6;
+  --color-primary-50: #1e3a8a;
+  --color-primary-100: #1e40af;
+  --color-primary-200: #1d4ed8;
+  --color-primary-300: #2563eb;
+  --color-primary-400: #3b82f6;
+  --color-primary-500: #60a5fa;
+  --color-primary-600: #93c5fd;
+  --color-primary-700: #bfdbfe;
+  --color-primary-800: #dbeafe;
+  --color-primary-900: #eff6ff;
+  
+  // Accent colors - Vibrant for dark theme
+  --color-accent: #10b981;
+  --color-accent-50: #064e3b;
+  --color-accent-100: #065f46;
+  --color-accent-200: #047857;
+  --color-accent-300: #059669;
+  --color-accent-400: #10b981;
+  --color-accent-500: #34d399;
+  --color-accent-600: #6ee7b7;
+  --color-accent-700: #a7f3d0;
+  --color-accent-800: #d1fae5;
+  --color-accent-900: #ecfdf5;
+  
+  // Semantic colors optimized for dark backgrounds
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+  
+  // Dark surface hierarchy
+  --color-surface: #1e293b;
+  --color-surface-50: #0f172a;
+  --color-surface-100: #1e293b;
+  --color-surface-200: #334155;
+  --color-surface-300: #475569;
+  --color-surface-400: #64748b;
+  --color-surface-500: #94a3b8;
+  --color-surface-600: #cbd5e1;
+  --color-surface-700: #e2e8f0;
+  --color-surface-800: #f1f5f9;
+  --color-surface-900: #f8fafc;
+  
+  // Background and layout for dark theme
+  --color-background: var(--color-surface-50);
+  --color-surface-elevated: var(--color-surface-100);
+  --color-surface-border: var(--color-surface-300);
+  --color-surface-hover: var(--color-surface-200);
+  --color-primary-subtle: rgba(59, 130, 246, 0.1);
+  --sidenav-bg: var(--color-surface-100);
+  --app-bg: #0f172a;
+  
+  // Enhanced shadows for dark theme
+  --elevation-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --elevation-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --elevation-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --elevation-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  
+  // Dark menu system
+  --menu-bg: rgba(30, 41, 59, 0.95);
+  --menu-bg-solid: var(--color-surface-100);
+  --menu-border: rgba(255, 255, 255, 0.1);
+  --menu-shadow: var(--elevation-xl);
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+  
+  // Dark text hierarchy with proper contrast ratios
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+  --text-accent: var(--color-primary-400);
+
+  // Dark theme page background
+  --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  
+  // Dark theme auth tokens
+  --auth-hero-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  
+  // Dark interactive states
+  --focus-ring: rgba(59, 130, 246, 0.5);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --hover-bg-subtle: rgba(255, 255, 255, 0.02);
+  --active-bg: rgba(255, 255, 255, 0.1);
+  --selected-bg: rgba(59, 130, 246, 0.2);
+  --disabled-bg: var(--color-surface-200);
+  --disabled-text: var(--color-surface-400);
+  
+  // Dark theme toggle colors
+  --toggle-track: var(--color-surface-300);
+  --toggle-thumb: var(--color-surface-800);
+  --toggle-track-checked: var(--color-primary);
+  --toggle-thumb-checked: #ffffff;
+
+  // Dark scrollbar
+  --scrollbar-track: rgba(255,255,255,0.04);
+  --scrollbar-thumb: rgba(255,255,255,0.12);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.18);
+}

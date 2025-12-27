@@ -1,0 +1,66 @@
+.auth-container {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+ 
+  background: var(--app-bg);
+  overflow: hidden;
+}
+
+.auth-card {
+  max-width: 460px;
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 16px;
+  box-shadow: var(--elevation-2);
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.95));
+}
+
+.auth-illustration { width: 112px; height: 112px; border-radius: 18px; display:flex; align-items:center; justify-content:center; background: transparent; box-shadow: 0 14px 40px rgba(17,24,39,0.12); }
+
+.auth-content { padding: 1.25rem 1.25rem; background: transparent; }
+
+.auth-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin:0; }
+.auth-sub { color: var(--text-secondary); margin: 0; font-size: 1rem; }
+
+mat-form-field { width: 100%; }
+
+.full-width { margin-top: 0.65rem; }
+
+/* Input sizing */
+.mat-input-element { font-size: 1rem; padding: 10px 0; }
+
+/* Reduce opacity of subtitles for better contrast */
+.auth-sub { opacity: .92; }
+
+
+.submit-btn { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: .6rem; }
+
+/* Ensure icon and text inside the button are vertically centered */
+.submit-btn mat-icon,
+.submit-btn .mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+  line-height: 1;
+  margin-right: 0.6rem; /* spacing between icon and button text */
+}
+
+.submit-btn span {
+  display: inline-flex;
+  align-items: center;
+}
+
+button[mat-raised-button] { border-radius: 10px; padding: 0.6rem 1.1rem; background: var(--color-primary); color: var(--text-inverse); box-shadow: 0 8px 30px rgba(51,102,255,0.14); }
+
+.error-message { margin-bottom: 0.75rem; display:flex; align-items:center; gap:0.5rem; }
+
+.auth-card-actions { justify-content:center; gap: .6rem; padding-bottom: 1rem; }
+.auth-link { color: var(--color-primary); font-weight: 600; text-decoration:none; }
+
+@media (prefers-reduced-motion: reduce) { .auth-illustration { transition: none; } }

@@ -1,0 +1,92 @@
+<div class="auth-container" role="main">
+  <mat-card class="auth-card">
+    <div class="auth-content">
+      <div class="auth-hero-text">
+        <h1 class="auth-title">{{ 'auth.reset.verify.title' | translate }}</h1>
+        <p class="auth-sub">{{ 'auth.reset.verify.subtitle' | translate }}</p>
+      </div>
+      @if (errorMessage()) {
+        <div class="error-message" role="alert" aria-live="assertive">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage() }}
+        </div>
+      }
+      @if (successMessage()) {
+        <div class="success-message" role="status" aria-live="polite">
+          <mat-icon>check_circle</mat-icon>
+          {{ successMessage() }}
+        </div>
+      }
+
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" [attr.aria-label]="'aria.verifyForm' | translate">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'auth.reset.verify.code' | translate }}</mat-label>
+          <input matInput formControlName="code" maxlength="6" 
+                 pattern="[0-9]*" inputmode="numeric"
+                 autocomplete="one-time-code" />
+          <mat-icon matPrefix>pin</mat-icon>
+          @if (verifyForm.get('code')?.hasError('required') && verifyForm.get('code')?.touched) {
+            <mat-error>{{ 'errors.required.code' | translate }}</mat-error>
+          }
+          @if (verifyForm.get('code')?.hasError('pattern') && verifyForm.get('code')?.touched) {
+            <mat-error>{{ 'errors.invalid.codePattern' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'auth.reset.verify.newPassword' | translate }}</mat-label>
+          <input matInput [type]="hidePassword() ? 'password' : 'text'" 
+                 formControlName="password" autocomplete="new-password" />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (verifyForm.get('password')?.hasError('required') && verifyForm.get('password')?.touched) {
+            <mat-error>{{ 'errors.required.password' | translate }}</mat-error>
+          }
+          @if (verifyForm.get('password')?.hasError('minlength') && verifyForm.get('password')?.touched) {
+            <mat-error>{{ 'errors.minLength.passwordShort' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <app-password-strength [password]="verifyForm.get('password')?.value || ''"></app-password-strength>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'auth.reset.verify.confirmPassword' | translate }}</mat-label>
+          <input matInput [type]="hideConfirm() ? 'password' : 'text'" 
+                 formControlName="confirm" autocomplete="new-password" />
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="toggleConfirmVisibility()">
+            <mat-icon>{{ hideConfirm() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (verifyForm.get('confirm')?.hasError('required') && verifyForm.get('confirm')?.touched) {
+            <mat-error>{{ 'errors.required.confirmPassword' | translate }}</mat-error>
+          }
+          @if (verifyForm.get('confirm')?.hasError('passwordMismatch')) {
+            <mat-error>{{ 'auth.register.mismatchError' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" 
+                class="full-width submit-btn auth-btn"
+                [disabled]="submitting() || verifyForm.invalid">
+          @if (submitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>{{ 'auth.reset.verify.loading' | translate }}</span>
+          } @else {
+            <span>{{ 'auth.reset.verify.submit' | translate }}</span>
+          }
+        </button>
+      </form>
+    </div>
+
+    <mat-card-actions class="auth-card-actions">
+      <a mat-button routerLink="/auth/reset" class="auth-link" color="accent">
+        {{ 'auth.reset.verify.backToRequest' | translate }}
+      </a>
+      <a mat-button routerLink="/auth/login" class="auth-link" color="primary">
+        {{ 'auth.reset.verify.backToLogin' | translate }}
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,324 @@
+// Mixins for UI/UX Excellence
+@use 'variables' as vars;
+
+// Theme-aware color utilities
+@mixin theme-colors($property, $light-color, $dark-color) {
+  :root & {
+    #{$property}: #{$light-color};
+  }
+  
+  [data-theme="dark"] & {
+    #{$property}: #{$dark-color};
+  }
+}
+
+// Modern button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$space-sm;
+  padding: vars.$space-md vars.$space-lg;
+  border: none;
+  border-radius: vars.$radius-lg;
+  font-weight: vars.$font-weight-medium;
+  font-size: vars.$font-size-sm;
+  line-height: vars.$line-height-tight;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all vars.$transition-base;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 2px solid vars.$color-primary-400;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  @include theme-colors(background-color, vars.$color-primary-600, vars.$color-primary-500);
+  @include theme-colors(color, white, white);
+
+  &:hover:not(:disabled) {
+    @include theme-colors(background-color, vars.$color-primary-700, vars.$color-primary-600);
+    transform: translateY(-1px);
+    box-shadow: vars.$shadow-md;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: vars.$shadow-sm;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  @include theme-colors(background-color, vars.$neutral-100, vars.$dark-200);
+  @include theme-colors(color, vars.$neutral-700, vars.$dark-700);
+  @include theme-colors(border, 1px solid vars.$neutral-200, 1px solid vars.$dark-300);
+
+  &:hover:not(:disabled) {
+    @include theme-colors(background-color, vars.$neutral-200, vars.$dark-300);
+  }
+}
+
+// Icon with text spacing
+@mixin icon-text-spacing($gap: vars.$space-sm) {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+
+  mat-icon,
+  .mat-icon {
+    flex-shrink: 0;
+  }
+}
+
+// Form field styling
+@mixin form-field-base {
+  width: 100%;
+  margin-bottom: vars.$space-lg;
+
+  .mat-mdc-form-field-label {
+    @include theme-colors(color, vars.$neutral-600, vars.$dark-600);
+  }
+
+  .mdc-text-field__input {
+    @include theme-colors(color, vars.$neutral-900, vars.$dark-900);
+    font-size: vars.$font-size-base;
+  }
+
+  .mdc-text-field__input::placeholder {
+    @include theme-colors(color, vars.$neutral-400, vars.$dark-400);
+  }
+}
+
+// Card styling
+@mixin card-base {
+  @include theme-colors(background-color, white, $dark-100);
+  @include theme-colors(border, 1px solid $neutral-200, 1px solid $dark-300);
+  border-radius: $radius-xl;
+  padding: $space-3xl;
+  box-shadow: $shadow-lg;
+  transition: all $transition-base;
+
+  [data-theme="dark"] & {
+    box-shadow: $shadow-dark-lg;
+  }
+}
+
+@mixin card-hover {
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-xl;
+
+    [data-theme="dark"] & {
+      box-shadow: $shadow-dark-lg;
+    }
+  }
+}
+
+// Layout containers
+@mixin container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $space-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: 0 $space-2xl;
+  }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Text utilities
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Menu and overlay styling
+@mixin menu-base {
+  @include theme-colors(background-color, white, $dark-100);
+  @include theme-colors(border, 1px solid $neutral-200, 1px solid $dark-300);
+  border-radius: $radius-xl;
+  padding: $space-md;
+  box-shadow: $shadow-xl;
+  backdrop-filter: blur(20px);
+
+  [data-theme="dark"] & {
+    box-shadow: $shadow-dark-lg;
+  }
+}
+
+@mixin menu-item {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  width: 100%;
+  padding: $space-md $space-lg;
+  border: none;
+  background: transparent;
+  @include theme-colors(color, $neutral-700, $dark-700);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-align: left;
+  text-decoration: none;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    @include theme-colors(background-color, $neutral-100, $dark-200);
+  }
+
+  &.active,
+  &.selected {
+    @include theme-colors(background-color, $color-primary-50, $color-primary-900);
+    @include theme-colors(color, $color-primary-700, $color-primary-300);
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// Avatar styling
+@mixin avatar($size: 40px) {
+  width: $size;
+  height: $size;
+  border-radius: $radius-full;
+  @include flex-center;
+  @include theme-colors(background-color, $color-primary-500, $color-primary-600);
+  @include theme-colors(color, white, white);
+  font-weight: $font-weight-bold;
+  font-size: calc(#{$size} / 2.5);
+  flex-shrink: 0;
+}
+
+// Badge/chip styling
+@mixin badge-base {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-xs $space-sm;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+}
+
+@mixin badge-primary {
+  @include badge-base;
+  @include theme-colors(background-color, $color-primary-100, $color-primary-900);
+  @include theme-colors(color, $color-primary-700, $color-primary-300);
+}
+
+@mixin badge-secondary {
+  @include badge-base;
+  @include theme-colors(background-color, $neutral-100, $dark-200);
+  @include theme-colors(color, $neutral-600, $dark-600);
+}
+
+// Loading states
+@mixin skeleton {
+  @include theme-colors(background-color, $neutral-200, $dark-300);
+  border-radius: $radius-md;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  [data-theme="dark"] &::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// Responsive utilities
+@mixin responsive-text($mobile-size, $desktop-size) {
+  font-size: $mobile-size;
+  
+  @media (min-width: $breakpoint-md) {
+    font-size: $desktop-size;
+  }
+}
+
+@mixin mobile-only {
+  @media (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-and-up {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin desktop-and-up {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}

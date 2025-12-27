@@ -1,0 +1,28 @@
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-100%);
+  background: var(--color-primary);
+  color: var(--text-inverse);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  box-shadow: var(--elevation-lg);
+  z-index: 9999;
+  transition: all 0.2s ease;
+  
+  &:focus,
+  &:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  
+  &:hover:focus {
+    background: var(--color-primary-600);
+    box-shadow: var(--elevation-xl);
+  }
+}

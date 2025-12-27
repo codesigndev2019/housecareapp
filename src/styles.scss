@@ -1,0 +1,614 @@
+/* Modern global theme and utilities */
+@use '@angular/material' as mat;
+@use './styles/variables' as *;
+
+// Material core and basic theming retained
+@include mat.core();
+
+/* Global helper to ensure icons inside buttons are centered with text */
+button mat-icon,
+button .mat-icon,
+button .mat-icon-button {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem; /* space between the icon and the text */
+}
+
+/* Overlay/dialog/menu global tweaks (moved from internal-layout component) */
+:root,
+[data-theme] {
+  /* Ensure overlays and panels follow theme color tokens */
+}
+
+/* Global overlay + menu rules (cover both legacy and MDC classnames) */
+.cdk-overlay-container,
+.mat-mdc-menu-panel,
+.mat-menu-panel,
+.mat-mdc-dialog-container,
+.mat-dialog-container,
+.mat-mdc-select-panel,
+.mat-select-panel {
+  color: var(--text-primary) !important;
+}
+
+/* Menu panel appearance */
+.cdk-overlay-container .mat-mdc-menu-panel,
+.cdk-overlay-container .mat-menu-panel {
+  background: var(--menu-bg) !important;
+  border: 1px solid var(--menu-border) !important;
+  box-shadow: var(--menu-shadow) !important;
+  border-radius: 10px !important;
+  padding: 6px 4px !important;
+  min-width: 220px !important;
+}
+
+/* Menu items: spacing, icon color, text */
+.cdk-overlay-container .mat-mdc-menu-item,
+.cdk-overlay-container .mat-menu-item,
+.cdk-overlay-container button.mat-menu-item {
+  color: var(--text-primary) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+}
+
+/* Hover / highlighted state (keyboard & mouse) */
+.cdk-overlay-container .mat-mdc-menu-item:hover,
+.cdk-overlay-container .mat-menu-item:hover,
+.cdk-overlay-container .mat-mdc-menu-item[aria-selected="true"],
+.cdk-overlay-container .mat-menu-item[aria-selected="true"],
+.cdk-overlay-container .mat-mdc-menu-item.cdk-focused,
+.cdk-overlay-container .mat-menu-item.cdk-focused {
+  background: var(--selected-bg) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* Ensure icons / checkmarks in menu are visible in dark theme */
+.cdk-overlay-container .mat-icon,
+.cdk-overlay-container .mat-mdc-menu-item .mat-icon,
+.cdk-overlay-container .mat-menu-item .mat-icon {
+  color: inherit !important;
+}
+
+/* Stronger focus-visible for keyboard users */
+.cdk-overlay-container .mat-mdc-menu-item:focus-visible,
+.cdk-overlay-container .mat-menu-item:focus-visible {
+  outline: 2px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+  border-radius: 8px !important;
+}
+
+/* Small helper for selected radio/check visuals inside menu (language item) */
+.cdk-overlay-container .mat-mdc-menu-item .mat-mdc-radio-outer-circle,
+.cdk-overlay-container .mat-menu-item .mat-mdc-radio-outer-circle,
+.cdk-overlay-container .mat-mdc-menu-item .mat-mdc-checkbox-background,
+.cdk-overlay-container .mat-menu-item .mat-mdc-checkbox-background {
+  background: transparent !important;
+  color: var(--text-inverse) !important;
+}
+
+/* Extra specific rules to override component-level styles that may hide icons/checks */
+.cdk-overlay-container .mat-mdc-menu-panel,
+.cdk-overlay-container .mat-menu-panel {
+  /* ensure the menu panel keeps a solid themed background */
+  background: var(--menu-bg) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+  padding: 6px 4px !important;
+}
+
+.cdk-overlay-container .mat-mdc-menu-item .mat-mdc-list-item__graphic,
+.cdk-overlay-container .mat-menu-item .mat-mdc-list-item__graphic,
+.cdk-overlay-container .mat-mdc-menu-item .mat-list-icon,
+.cdk-overlay-container .mat-menu-item .mat-list-icon,
+.cdk-overlay-container .mat-mdc-menu-item .mat-icon,
+.cdk-overlay-container .mat-menu-item .mat-icon {
+  color: inherit !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 0.5rem !important; /* spacing between icon and label */
+}
+
+/* Ensure label text and icon vertically align */
+.cdk-overlay-container .mat-mdc-menu-item,
+.cdk-overlay-container .mat-menu-item {
+  align-items: center !important;
+}
+
+/* Keep the check/radio visible and aligned */
+.cdk-overlay-container .mat-mdc-menu-item .mat-mdc-radio-root,
+.cdk-overlay-container .mat-menu-item .mat-mdc-radio-root,
+.cdk-overlay-container .mat-mdc-menu-item .mat-mdc-checkbox-root,
+.cdk-overlay-container .mat-menu-item .mat-mdc-checkbox-root {
+  margin-right: 0.5rem !important;
+}
+
+/* Radio / checkbox icons inside the menu (language selection) */
+.cdk-overlay-container .mat-mdc-radio-root,
+.cdk-overlay-container .mat-mdc-checkbox-root,
+.cdk-overlay-container .mat-radio-outer-circle,
+.cdk-overlay-container .mat-checkbox-background {
+  color: var(--text-inverse) !important;
+  fill: currentColor !important;
+}
+
+/* If any menu item sets its own background, ensure contrast by forcing text/icon color */
+.cdk-overlay-container .mat-mdc-menu-item[aria-selected="true"] *,
+.cdk-overlay-container .mat-menu-item[aria-selected="true"] * {
+  color: var(--text-inverse) !important;
+}
+
+/* Increase selected item contrast for dark theme specifically */
+[data-theme="dark"] .cdk-overlay-container .mat-mdc-menu-item[aria-selected="true"],
+[data-theme="dark"] .cdk-overlay-container .mat-menu-item[aria-selected="true"] {
+  background: rgba(255,255,255,0.08) !important;
+  color: var(--text-inverse) !important;
+}
+
+.mat-mdc-dialog-container .mat-mdc-text-field .mdc-text-field__input,
+.mat-mdc-dialog-container .mat-mdc-text-field .mdc-floating-label {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-dialog-container .mat-mdc-text-field .mdc-text-field__input::placeholder {
+  color: var(--text-secondary) !important;
+}
+
+.family-header button.mat-flat-button,
+.family-header .btn-primary {
+  color: var(--text-inverse) !important;
+}
+
+/* Mat form field prefix/suffix spacing */
+.mat-form-field .mat-icon.mat-prefix,
+.mat-form-field mat-icon[matprefix],
+.mat-form-field mat-icon.mat-prefix {
+  margin-right: 0.5rem;
+}
+
+.mat-form-field .mat-icon.mat-suffix,
+.mat-form-field mat-icon[matsuffix],
+.mat-form-field mat-icon.mat-suffix {
+  margin-left: 0.4rem;
+}
+
+/* Links and other inline icons */
+a.mat-button mat-icon,
+button.mat-button mat-icon {
+  margin-right: 0.5rem;
+}
+
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+
+/* Global typography improvements */
+html { font-size: 15px; }
+body { font-size: 1rem; line-height: 1.45; }
+
+/* Focus and accessible outlines */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+  border-radius: 6px;
+}
+
+/* Ensure focus ring is visible on interactive menu elements globally */
+.mat-mdc-menu-item:focus-visible,
+.mat-mdc-list-item:focus-visible,
+button.mat-menu-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Card hover elevation (disabled for auth cards to avoid motion while interacting) */
+.auth-card {
+  transition: box-shadow .18s ease;
+}
+.auth-card:hover {
+  transform: none;
+  box-shadow: var(--elevation-md);
+}
+
+/* Button focus and active micro-interactions */
+button[mat-raised-button], .btn-primary {
+  transition: transform .08s ease, box-shadow .12s ease, opacity .08s ease;
+}
+button[mat-raised-button]:active, .btn-primary:active {
+  transform: translateY(1px) scale(.995);
+}
+button[mat-raised-button]:focus-visible, .btn-primary:focus-visible {
+  box-shadow: 0 12px 32px rgba(51,102,255,0.18), 0 0 0 4px var(--focus-ring);
+}
+
+/* Input focus styling */
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06), 0 0 0 4px var(--focus-ring);
+  border-radius: 8px;
+  border-color: var(--color-primary-700);
+}
+
+// Global layout
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  overflow: hidden; /* No scroll en la página global */
+}
+
+/* container utility */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Card / surface utility */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-1);
+  padding: 1.25rem;
+}
+
+/* Auth card responsive container with consistent design */
+.auth-card {
+  width: 100% !important;
+  max-width: 520px !important;
+  margin: 1rem auto !important;
+  background: var(--color-surface) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--elevation-xl) !important;
+  border: 1px solid var(--color-surface-200) !important;
+  padding: 2rem !important;
+  transition: box-shadow 0.3s ease !important;
+  min-height: auto !important;
+  height: auto !important;
+}
+
+.auth-card:hover {
+  box-shadow: var(--elevation-xl) !important;
+  transform: none !important;
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    margin: 1rem !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Modern button styling with consistent design system */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--text-inverse);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.12s ease;
+  box-shadow: var(--elevation-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--elevation-lg);
+  background: var(--color-primary-600);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--elevation-md);
+}
+
+/* Dark-theme button style: white background with dark text for better contrast */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] button[mat-raised-button],
+[data-theme="dark"] button[mat-flat-button] {
+  background: #ffffff !important;
+  color: var(--text-dark) !important;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12) !important;
+}
+
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] button[mat-raised-button]:hover,
+[data-theme="dark"] button[mat-flat-button]:hover {
+  background: #f3f4f6 !important;
+  transform: translateY(-1px) !important;
+}
+
+
+/* Button SVG icon sizing removed — form buttons no longer include inline SVG icons */
+
+/* Material button overrides for consistency */
+button[mat-raised-button],
+button[mat-flat-button] {
+  border-radius: var(--radius-lg) !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  box-shadow: var(--elevation-md) !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 24px !important;
+  min-height: 44px !important;
+}
+
+button[mat-raised-button]:hover,
+button[mat-flat-button]:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--elevation-lg) !important;
+}
+
+button[mat-icon-button] {
+  border-radius: var(--radius-md) !important;
+}
+
+/* Form controls with consistent design system */
+.full-width {
+  width: 100%;
+}
+
+label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Material form field improvements */
+.mat-mdc-form-field {
+  width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-lg) !important;
+  background: var(--color-surface-50) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--focus-ring) !important;
+}
+
+.mat-mdc-form-field .mat-mdc-floating-label {
+  color: var(--text-secondary) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: var(--color-primary) !important;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-infix {
+  min-height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 4px !important;
+}
+
+/* Input prefix/suffix spacing */
+.mat-mdc-form-field .mat-mdc-icon-button {
+  border-radius: var(--radius-md) !important;
+}
+
+.mat-mdc-form-field .mat-icon {
+  color: var(--text-secondary) !important;
+}
+
+/* Error styling */
+.mat-mdc-form-field .mat-mdc-form-field-error {
+  color: var(--color-error) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Select styling */
+.mat-mdc-select-trigger {
+  padding-right: 2rem !important;
+}
+
+.mat-mdc-select-arrow {
+  color: var(--text-secondary) !important;
+}
+
+/* Auth container layout */
+.auth-container {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Auth card scroll settings */
+.auth-card {
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Error and success messages */
+.error-message,
+.success-message {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.success-message {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Auth title/subtitle spacing */
+.auth-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auth-sub {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+/* Remove default paragraph spacing inside auth cards */
+.auth-card p,
+.auth-content p {
+  margin: 0;
+}
+
+
+/* Global menu and overlay fixes - NO transparency issues */
+/* Ensure all Angular Material menus have solid backgrounds */
+.cdk-overlay-container {
+  z-index: 1000;
+}
+
+.cdk-overlay-backdrop {
+  background: var(--overlay-bg) !important;
+}
+
+.mat-mdc-menu-panel {
+  background: var(--menu-bg) !important;
+  border: 1px solid var(--menu-border) !important;
+  box-shadow: var(--menu-shadow) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 8px !important;
+  min-width: 180px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: var(--radius-md) !important;
+  margin: 2px 4px !important;
+  padding: 8px 12px !important;
+  min-height: 36px !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: var(--hover-bg) !important;
+}
+
+.mat-mdc-menu-item.selected,
+.mat-mdc-menu-item[aria-selected="true"] {
+  background: var(--selected-bg) !important;
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-menu-item:disabled {
+  background: transparent !important;
+  color: var(--disabled-text) !important;
+}
+
+/* Fix select dropdowns */
+.mat-mdc-select-panel {
+  background: var(--menu-bg) !important;
+  border: 1px solid var(--menu-border) !important;
+  box-shadow: var(--menu-shadow) !important;
+  border-radius: var(--radius-lg) !important;
+  max-height: 280px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.mat-mdc-option {
+  padding: 8px 16px !important;
+  min-height: 40px !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  margin: 2px 6px !important;
+}
+
+.mat-mdc-option:hover {
+  background: var(--hover-bg) !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected {
+  background: var(--selected-bg) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Fix tooltips */
+.mat-mdc-tooltip {
+  background: var(--text-primary) !important;
+  color: var(--text-inverse) !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  border-radius: var(--radius-md) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Fix dialog overlays */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--color-surface) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--elevation-xl) !important;
+}
+
+/* Fix snackbar */
+.mat-mdc-snack-bar-container {
+  background: var(--text-primary) !important;
+  color: var(--text-inverse) !important;
+  border-radius: var(--radius-lg) !important;
+}
+.visually-hidden { position: absolute !important; left: -9999px !important; top: auto !important; width: 1px !important; height: 1px !important; overflow: hidden; }
+
+/* Entrance animation for hero illustrations and titles */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: translateY(8px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+.auth-hero-text.with-entrance {
+  animation: fadeInScale .52s cubic-bezier(.2,.9,.2,1) both;
+  transform-origin: top center;
+}
+
+/* Shield hero tuning: keep it centered and look front-facing */
+/* legacy shield SVG styles removed with hero component */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary { transition: none; transform: none; }
+  .auth-hero-text.with-entrance { animation: none !important; }
+}
+

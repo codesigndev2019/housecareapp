@@ -1,0 +1,80 @@
+.auth-container { min-height: 100vh; display: grid; place-items: center;  background: var(--app-bg); }
+
+.auth-card { max-width: 680px; width: 100%; border-radius: 16px; overflow: hidden; box-shadow: var(--elevation-2); background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.96)); }
+
+.auth-content { padding: 1.25rem 1.25rem; }
+
+.auth-content { padding: 1.25rem 1.25rem; }
+
+.full-width { margin-top: 0.75rem; }
+
+.submit-btn { margin-top: 1rem; display:flex; justify-content:center; align-items:center; height:48px; }
+
+.auth-title { font-size: 1.5rem; }
+.auth-sub { font-size: 1rem; opacity: .92; }
+
+/* Slightly increase spacing in form fields for readability */
+.mat-form-field-infix { padding: 6px 0; }
+
+
+button[mat-raised-button] { border-radius: 10px; padding: 0.6rem 1rem; background: var(--color-primary); color: var(--text-inverse); }
+
+/* Button icon/SVG removed for form buttons */
+.auth-card-actions { justify-content:center; gap: .6rem; padding-bottom: 1rem; }
+.auth-link { color: var(--color-primary); font-weight: 600; text-decoration:none; }
+
+.auth-grid { display:grid; gap: 1rem; }
+
+@media (min-width: 920px) {
+  .auth-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Layout adjustments to keep scrolling inside card */
+.auth-card { display:flex; flex-direction:column; max-height: calc(100vh - 3.5rem); }
+.auth-content { padding: 0.75rem 1.25rem 1rem 1.25rem; flex:1 1 auto; overflow:hidden; }
+.form-scroll { overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling: touch; padding-right: 8px; max-height: 40vh; box-sizing: border-box; }
+
+/* Custom styled scrollbar for create account form */
+.form-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+}
+
+/* Prevent any horizontal scrolling on the page by keeping content within the card */
+.auth-container { height: 100vh; overflow: hidden; }
+
+/* Ensure card itself manages vertical content without increasing page size */
+.auth-card { max-height: calc(100vh - 2rem); overflow: hidden; display:flex; flex-direction:column; }
+
+/* make sure inner content can't cause horizontal overflow */
+.auth-content, .form-scroll, .form-actions { box-sizing: border-box; overflow-x: hidden; }
+
+/* style the custom suffix arrow */
+.select-suffix { display:inline-flex; align-items:center; margin-left:0.4rem; }
+.select-arrow-svg { width:18px; height:18px; display:block; }
+
+/* hide the default material arrow to avoid duplication */
+.mat-form-field-appearance-outline .mat-select-arrow { display: none !important; }
+.form-actions { padding: .6rem 1.25rem 1.25rem 1.25rem; }
+
+/* Adjust submit spacing so it's visible outside the scroll */
+.submit-btn { margin-top: 0.75rem; } 
+
+::ng-deep.relation-select .mat-mdc-select-arrow { display: none; }

@@ -1,0 +1,119 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "submit": "Entrar",
+      "subtitle": "Administra tus finanzas, eventos y tareas en un solo lugar",
+      "loading": "Ingresando..."
+    },
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "register": {
+      "title": "Crear Cuenta",
+      "subtitle": "Únete y organiza tu vida familiar con facilidad",
+      "fullName": "Nombre completo",
+      "relation": "Parentesco",
+      "dob": "Fecha de nacimiento",
+      "phone": "Teléfono",
+      "confirm": "Confirmar contraseña",
+      "submit": "Crear cuenta",
+      "link": "Crear cuenta",
+      "loading": "Creando cuenta...",
+      "passwordPlaceholder": "Crea una contraseña segura",
+      "showPasswordAria": "Mostrar u ocultar contraseña",
+      "confirmError": "Confirma tu contraseña",
+      "mismatchError": "Las contraseñas no coinciden",
+      "phoneError": "Ingresa un teléfono válido (10-15 dígitos)",
+      "haveAccount": "¿Ya tienes cuenta? Inicia sesión"
+    },
+    "reset": {
+      "request": {
+        "title": "Recuperar Contraseña",
+        "subtitle": "Recibirás un código de 6 dígitos por correo",
+        "submit": "Enviar Código",
+        "loading": "Enviando código...",
+        "backToLogin": "Volver al inicio de sesión"
+      },
+      "verify": {
+        "title": "Verificar Código",
+        "subtitle": "Introduce el código de 6 dígitos que recibiste",
+        "submit": "Cambiar Contraseña",
+        "code": "Código de 6 dígitos",
+        "codeLabel": "Código (6 dígitos)",
+        "newPassword": "Nueva contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "loading": "Verificando...",
+        "backToRequest": "Solicitar nuevo código",
+        "backToLogin": "Volver al inicio"
+      }
+    },
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loading": "Cargando...",
+    "logout": "Cerrar sesión"
+  },
+  "layout": {
+    "panel": "Panel",
+    "appTitle": "Mi Aplicación",
+    "familySection": "Familia"
+  },
+  "tools": {
+    "language": "Idioma",
+    "theme": "Tema",
+    "dark": "Oscuro",
+    "light": "Claro",
+    "spanish": "Español",
+    "english": "English"
+  },
+  "family": {
+    "title": "Miembros de la familia",
+    "add": "Agregar miembro",
+    "birth": "Fecha de nacimiento",
+    "relation": "Parentesco",
+    "accountType": "Tipo de cuenta",
+    "editor": "Editor",
+    "readOnly": "Solo lectura",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "actions": {
+    "edit": "Editar",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "update": "Actualizar"
+  },
+  "errors": {
+    "required": {
+      "email": "El correo es requerido",
+      "password": "La contraseña es requerida",
+      "fullName": "El nombre completo es requerido",
+      "code": "El código es requerido",
+      "newPassword": "La nueva contraseña es requerida",
+      "confirmPassword": "Confirmar contraseña es requerido"
+    },
+    "invalid": {
+      "email": "Ingresa un correo válido",
+      "code": "El código debe tener 6 dígitos",
+      "codePattern": "Ingresa 6 dígitos",
+      "passwordMatch": "Las contraseñas no coinciden"
+    },
+    "minLength": {
+      "password": "La contraseña debe tener al menos 8 caracteres",
+      "passwordShort": "Mínimo 8 caracteres"
+    }
+  },
+  "aria": {
+    "toggleMenu": "Alternar menú",
+    "selectLanguage": "Seleccionar idioma",
+    "toggleTheme": "Cambiar tema",
+    "tools": "Herramientas",
+    "loginForm": "Formulario de inicio de sesión",
+    "registerForm": "Formulario de registro",
+    "resetForm": "Formulario de recuperación",
+    "verifyForm": "Formulario de verificación",
+    "formFields": "Campos del formulario"
+  }
+}

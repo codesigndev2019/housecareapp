@@ -1,0 +1,153 @@
+// Global app styling with theme support
+
+// Smooth theme transitions
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+// Ensure proper scrollbar theming
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-500);
+}
+
+// Global focus ring for accessibility
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+// Angular Material theme overrides
+.mat-mdc-card {
+  background: var(--color-surface) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--color-surface-200) !important;
+}
+
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-outlined-button {
+  &:not([disabled]) {
+    color: var(--text-primary) !important;
+  }
+}
+
+.mat-mdc-form-field {
+  .mdc-text-field--filled .mdc-text-field__input {
+    background: var(--color-surface-50) !important;
+  }
+  
+  .mdc-text-field--outlined .mdc-notched-outline__leading,
+  .mdc-text-field--outlined .mdc-notched-outline__notch,
+  .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-color: var(--color-surface-300) !important;
+  }
+}
+
+// Menu theming
+.mat-mdc-menu-panel {
+  background: var(--menu-bg-solid) !important;
+  border: 1px solid var(--menu-border) !important;
+  box-shadow: var(--menu-shadow) !important;
+  backdrop-filter: blur(8px);
+}
+
+.mat-mdc-menu-item {
+  color: var(--text-primary) !important;
+  
+  &:hover {
+    background: var(--hover-bg) !important;
+  }
+}
+
+// Dialog theming
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--color-surface) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--color-surface-200) !important;
+}
+
+.mat-mdc-dialog-title {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-dialog-content {
+  color: var(--text-primary) !important;
+}
+
+// Enhanced form field theming for dark mode
+.mat-mdc-form-field {
+  .mdc-text-field--filled {
+    background: var(--color-surface-50) !important;
+    
+    .mdc-text-field__input {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  .mdc-floating-label {
+    color: var(--text-secondary) !important;
+    
+    &.mdc-floating-label--float-above {
+      color: var(--color-primary) !important;
+    }
+  }
+  
+  // Input text color
+  input.mat-mdc-input-element,
+  textarea.mat-mdc-input-element {
+    color: var(--text-primary) !important;
+    caret-color: var(--color-primary) !important;
+  }
+}
+
+// Select field specific fixes
+.mat-mdc-select {
+  .mat-mdc-select-value {
+    color: var(--text-primary) !important;
+  }
+  
+  .mat-mdc-select-trigger {
+    color: var(--text-primary) !important;
+  }
+  
+  .mat-mdc-select-arrow {
+    color: var(--text-secondary) !important;
+  }
+}
+
+// Select panel theming
+.mat-mdc-select-panel {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-surface-300) !important;
+  
+  .mat-mdc-option {
+    color: var(--text-primary) !important;
+    
+    &:hover {
+      background: var(--hover-bg) !important;
+    }
+    
+    &.mat-mdc-option-active {
+      background: var(--selected-bg) !important;
+    }
+  }
+}
+
+// Snackbar theming
+.mat-mdc-snack-bar-container {
+  background: var(--color-surface-100) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--color-surface-300) !important;
+}

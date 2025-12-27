@@ -1,0 +1,5 @@
+<div class="skeleton" [attr.data-type]="type" [class.animated]="animated" role="status" [attr.aria-label]="'auth.loading' | translate">
+  @for (idx of getRows(); track idx) {
+    <div class="skeleton-line" [style.width.%]="getWidth(idx)"></div>
+  }
+</div>

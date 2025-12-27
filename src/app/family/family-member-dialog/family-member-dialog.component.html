@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>{{ data?.member ? ('actions.edit' | translate) : ('family.add' | translate) }}</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'auth.register.fullName' | translate }}</mat-label>
+    <input matInput formControlName="fullName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'family.birth' | translate }}</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="birthday" />
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'auth.register.relation' | translate }}</mat-label>
+    <input matInput formControlName="relation" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'auth.register.phone' | translate }}</mat-label>
+    <input matInput formControlName="phone" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'auth.email' | translate }}</mat-label>
+    <input matInput formControlName="email" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'family.accountType' | translate }}</mat-label>
+    <mat-select formControlName="accountType">
+      <mat-option value="editor">{{ 'family.editor' | translate }}</mat-option>
+      <mat-option value="read">{{ 'family.readOnly' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">{{ 'actions.cancel' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="save()">{{ 'actions.save' | translate }}</button>
+</mat-dialog-actions>

@@ -1,0 +1,31 @@
+<div class="auth-layout">
+  <mat-toolbar class="auth-header">
+    <span class="header-title" i18nText="layout.appTitle"></span>
+    <span class="spacer"></span>
+    
+    <button mat-icon-button (click)="toggleTheme()" class="theme-toggle" [attr.aria-label]="'aria.toggleTheme' | translate">
+      <mat-icon>{{ isDarkTheme ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+    
+    <button mat-icon-button [matMenuTriggerFor]="langMenu" class="lang-selector" [attr.aria-label]="'aria.selectLanguage' | translate">
+      <mat-icon>language</mat-icon>
+    </button>
+    
+    <mat-menu #langMenu="matMenu" panelClass="lang-menu">
+      <button mat-menu-item (click)="setLanguage('es')" [class.selected]="currentLanguage() === 'es'">
+        <span class="flag-svg" [innerHTML]="getFlagSvg('es')"></span>
+        <span i18nText="tools.spanish"></span>
+        <mat-icon *ngIf="currentLanguage() === 'es'" class="menu-check">check</mat-icon>
+      </button>
+      <button mat-menu-item (click)="setLanguage('en')" [class.selected]="currentLanguage() === 'en'">
+        <span class="flag-svg" [innerHTML]="getFlagSvg('en')"></span>
+        <span i18nText="tools.english"></span>
+        <mat-icon *ngIf="currentLanguage() === 'en'" class="menu-check">check</mat-icon>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <main class="auth-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

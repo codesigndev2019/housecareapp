@@ -1,0 +1,72 @@
+.full-width { width: 100%; }
+.mat-dialog-content { display:flex; flex-direction:column; gap:0.6rem; padding-top:0.5rem; }
+
+:host {
+	color: var(--text-primary);
+}
+
+// Dark theme dialog title fix
+:host ::ng-deep .mat-mdc-dialog-title,
+:host ::ng-deep h2[mat-dialog-title] {
+	color: var(--text-primary) !important;
+}
+
+// Fix dialog content background
+:host ::ng-deep .mat-mdc-dialog-content {
+	background: transparent;
+	color: var(--text-primary) !important;
+}
+
+// Fix all form field colors
+:host ::ng-deep .mat-mdc-form-field {
+	// Input text color
+	.mat-mdc-input-element {
+		color: var(--text-primary) !important;
+	}
+	
+	// Label color
+	.mat-mdc-floating-label {
+		color: var(--text-secondary) !important;
+	}
+	
+	// Select value and trigger
+	.mat-mdc-select-value,
+	.mat-mdc-select-value-text {
+		color: var(--text-primary) !important;
+	}
+	
+	.mat-mdc-select-trigger {
+		color: var(--text-primary) !important;
+	}
+	
+	// Select arrow
+	.mat-mdc-select-arrow {
+		color: var(--text-secondary) !important;
+	}
+	
+	// Background for filled appearance
+	.mat-mdc-text-field--filled {
+		background-color: var(--color-surface-50) !important;
+		
+		.mdc-line-ripple::before {
+			border-bottom-color: var(--color-surface-300) !important;
+		}
+	}
+}
+
+.mat-form-field {
+	.mat-mdc-floating-label,
+	.mat-form-field-label {
+		color: var(--text-secondary) !important;
+	}
+
+	.mat-mdc-text-field .mdc-text-field__input,
+	input.mat-input-element {
+		color: var(--text-primary) !important;
+	}
+
+	input::placeholder,
+	textarea::placeholder {
+		color: var(--text-secondary) !important;
+	}
+}

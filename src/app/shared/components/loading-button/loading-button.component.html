@@ -1,0 +1,20 @@
+<button 
+    class="loading-button"
+    [class.loading]="loading"
+    [class]="variant"
+    [type]="type"
+    [disabled]="loading || disabled" 
+    [attr.aria-busy]="loading"
+    [attr.aria-label]="loading ? loadingLabel : undefined"
+    [ngClass]="btnClass">
+  
+  <span class="button-text">
+    <ng-content></ng-content>
+  </span>
+  
+  @if (loading) {
+    <span class="loading-spinner" aria-hidden="true">
+      <mat-spinner diameter="16"></mat-spinner>
+    </span>
+  }
+</button>
