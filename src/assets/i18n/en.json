@@ -55,7 +55,83 @@
   "layout": {
     "panel": "Panel",
     "appTitle": "My Application",
-    "familySection": "Family"
+    "familySection": "Family",
+    "catalogsSection": "Catalogs",
+    "recipesSection": "Recipes"
+  },
+  "catalogs": {
+    "title": "Catalogs",
+    "subtitle": "Here you can add and manage catalogs",
+    "add": "Add Catalog",
+    "createTitle": "Add Catalog",
+    "editTitle": "Edit Catalog",
+    "searchPlaceholder": "Search catalogs by name...",
+    "name": "Name",
+    "description": "Description",
+    "createdAt": "Creation date",
+    "updatedAt": "Modification date",
+    "lastModifiedBy": "Last modified by",
+    "empty": "No catalogs",
+    "emptySubtitle": "Create your first catalog to get started"
+  },
+  "recipes": {
+    "title": "Recipes",
+    "subtitle": "Add and schedule recipes",
+    "add": "Add Recipe",
+    "createTitle": "Add Recipe",
+    "editTitle": "Edit Recipe",
+    "photoAlt": "Dish photo",
+    "name": "Dish name",
+    "description": "Description",
+    "imageUrl": "Image URL",
+    "ingredients": "Ingredients",
+    "preparation": "Preparation",
+    "images": "Images",
+    "uploadImages": "Upload images",
+    "imagesHelp": "Max 2 images. Formats: JPG, JPEG, PNG.",
+    "imagesTooMany": "You can only upload up to 2 images.",
+    "imagesInvalidType": "Invalid image format (only JPG/JPEG/PNG).",
+    "imagesReadError": "Error reading images.",
+    "scheduleToggle": "Schedule recipe",
+    "scheduledAt": "Scheduled date",
+    "empty": "No recipes",
+    "emptySubtitle": "Add your first recipe to get started"
+  },
+  "messages": {
+    "created": "Catalog \"{name}\" created.",
+    "updated": "Catalog \"{name}\" updated.",
+    "activated": "Catalog \"{name}\" activated.",
+    "deactivated": "Catalog \"{name}\" deactivated.",
+    "reverted": "Catalog \"{name}\" reactivated."
+  },
+  "actions": {
+    "undo": "Undo",
+    "edit": "Edit",
+    "view": "View",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "history": {
+    "title": "Activity history",
+    "date": "Date",
+    "type": "Action",
+    "catalog": "Catalog",
+    "user": "User",
+    "before": "Before",
+    "after": "After",
+    "open": "History",
+    "typeCreate": "Created",
+    "typeUpdate": "Updated",
+    "typeActivate": "Activated",
+    "typeDeactivate": "Deactivated",
+    "typeUndo": "Reverted"
   },
   "tools": {
     "language": "Language",
@@ -75,15 +151,6 @@
     "readOnly": "Read only",
     "active": "Active",
     "inactive": "Inactive"
-  },
-  "actions": {
-    "edit": "Edit",
-    "deactivate": "Deactivate",
-    "activate": "Activate",
-    "save": "Save",
-    "cancel": "Cancel",
-    "create": "Create",
-    "update": "Update"
   },
   "errors": {
     "required": {

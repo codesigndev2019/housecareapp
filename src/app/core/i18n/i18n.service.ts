@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { loadTranslations } from './translation-loader';
+import { LoggerService } from '../services/logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
@@ -9,19 +10,19 @@ export class I18nService {
 
   translations$ = this.translations.asObservable();
 
-  constructor() {
+  // Track missing key warnings so we only warn once per key
+  private missingKeyWarned = new Set<string>();
+
+  constructor(private logger: LoggerService) {
     // Get language from localStorage, default to 'es' only if nothing is stored
     this.lang = localStorage.getItem('lang') || 'es';
-    console.log('I18nService initialized with lang:', this.lang);
 
     // Only set default if localStorage is empty
     if (!localStorage.getItem('lang')) {
       localStorage.setItem('lang', 'es');
     }
 
-    // Try loading translations from assets first. If loading fails or returns
-    // an empty object, fall back to the built-in fallback translations so
-    // the UI shows immediate text while assets are being fetched.
+    // Try loading translations from assets first, fall back to built-in if needed
     this.load(this.lang).then((loaded) => {
       if (!loaded) {
         this.initFallbackTranslations();
@@ -136,7 +137,7 @@ export class I18nService {
         'tools': 'Herramientas'
       }
     };
-    console.log('Setting fallback translations:', fallbackTranslations);
+    this.logger.debug('Setting fallback translations');
     this.translations.next(fallbackTranslations);
   }
 
@@ -145,7 +146,7 @@ export class I18nService {
   }
 
   async set(lang: string): Promise<void> {
-    console.log('Setting language to:', lang);
+    this.logger.info && this.logger.info('Setting language to:', lang);
     if (this.lang === lang) return;
 
     this.lang = lang;
@@ -282,26 +283,30 @@ export class I18nService {
     }
     const result = typeof cur === 'string' ? cur : (fallback || key);
     if (result === key && !fallback) {
-      console.warn('Translation missing for key:', key, 'Available translations:', Object.keys(map));
+      // Warn only once per missing key to avoid console spam
+      if (!this.missingKeyWarned.has(key)) {
+        this.missingKeyWarned.add(key);
+        console.warn('Translation missing for key:', key);
+      }
     }
     return result;
   }
 
   private async load(lang: string): Promise<boolean> {
-    console.log('Loading translations for:', lang);
+    this.logger.debug('Loading translations for:', lang);
     try {
       const json = await loadTranslations(lang);
-      console.log('Loaded translations from server:', json);
+      this.logger.info && this.logger.info('Loaded translations from server', json && Object.keys(json).length);
       if (json && Object.keys(json).length > 0) {
         this.translations.next(json);
-        console.log('Successfully updated translations from server');
+        this.logger.debug && this.logger.debug('Successfully updated translations from server');
         return true;
       } else {
-        console.warn('Empty translations loaded from server');
+        this.logger.warn && this.logger.warn('Empty translations loaded from server');
         return false;
       }
     } catch (error) {
-      console.error('Error loading translations for', lang, ':', error);
+      this.logger.error && this.logger.error('Error loading translations for', lang, ':', error);
       return false;
     }
   }

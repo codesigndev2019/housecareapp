@@ -1,6 +1,4 @@
-// ============================================
 // LAYOUT CONTAINER & SIDENAV
-// ============================================
 .layout-sidenav-container {
   height: 100vh;
 }
@@ -76,7 +74,7 @@
   }
 }
 
-// Dark theme active state - vibrant with glow effect
+// ---
 :host-context([data-theme="dark"]) ::ng-deep .layout-sidenav mat-nav-list a.mat-mdc-list-item.active {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.08)) !important;
   border-left-color: #60a5fa !important;
@@ -96,6 +94,7 @@
   }
 }
 
+// ---
 :host ::ng-deep .layout-sidenav .nav-item-content {
   display: flex !important;
   align-items: center !important;
@@ -152,7 +151,7 @@
   color: var(--text-inverse);
 }
 
-// ============================================
+// ---
 // MAIN CONTENT
 // ============================================
 .layout-main {
@@ -164,184 +163,7 @@
 
 
 
-// ============================================
-// TOOLS MENU (Language & Theme)
-// ============================================
-:host ::ng-deep .mat-mdc-menu-panel.modern-tools-menu {
-  background: var(--color-surface);
-  border: 1px solid var(--color-surface-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--elevation-xl);
-  padding: 1rem;
-  min-width: 300px;
-  backdrop-filter: blur(20px);
-  
-  .menu-section {
-    margin-bottom: 0.75rem;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  .menu-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    padding: 0.5rem 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.75px;
-    margin-bottom: 0.5rem;
-    
-    .section-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
-    }
-  }
-  
-  .menu-divider {
-    margin: 1rem 0;
-    border-color: var(--color-surface-border);
-  }
-  
-  button.mat-mdc-menu-item {
-    min-height: 48px;
-    border-radius: var(--radius-lg);
-    margin: 2px 0;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background: var(--hover-bg);
-    }
-    
-    &:focus-visible {
-      outline: 2px solid var(--focus-ring);
-      outline-offset: 2px;
-    }
-  }
-}
-
-// Language items
-:host ::ng-deep .language-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  margin: 4px 0;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 52px;
-  font-weight: 500;
-  cursor: pointer;
-  
-  &:hover {
-    background: var(--hover-bg);
-    transform: translateX(4px);
-  }
-  
-  &.selected {
-    background: var(--selected-bg);
-    color: var(--color-primary);
-    font-weight: 600;
-    box-shadow: var(--elevation-sm);
-    
-    .menu-check {
-      animation: checkAppear 0.3s ease;
-    }
-  }
-  
-  .flag-container {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 22px;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    flex-shrink: 0;
-    
-    svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  }
-  
-  .language-text {
-    flex: 1;
-    font-size: 0.95rem;
-    letter-spacing: 0.25px;
-  }
-  
-  .menu-check {
-    color: var(--color-accent);
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
-    flex-shrink: 0;
-  }
-}
-
-@keyframes checkAppear {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-// Theme section
-.theme-section {
-  .theme-toggle-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.875rem;
-    padding: 1.125rem 1rem 0.75rem;
-    background: var(--color-surface-elevated);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-surface-border);
-    box-shadow: var(--elevation-sm);
-    
-    .theme-icon {
-      font-size: 22px;
-      width: 22px;
-      height: 22px;
-      color: var(--text-secondary);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &.active {
-        color: var(--color-primary);
-        transform: scale(1.15);
-      }
-    }
-    
-    .modern-theme-toggle {
-      --mdc-switch-selected-track-color: var(--color-primary);
-      --mdc-switch-selected-handle-color: #ffffff;
-      --mdc-switch-unselected-track-color: var(--color-surface-400);
-      --mdc-switch-unselected-handle-color: #ffffff;
-    }
-  }
-  
-  .theme-label {
-    text-align: center;
-    padding: 0.625rem 1rem 0.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
-  }
-}
+/* Tools menu styles moved to global styles.scss */
 
 // ============================================
 // RESPONSIVE
@@ -402,17 +224,6 @@
   }
 }
 
-.menu-title{
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
 
 
-::ng-deep .language-item .mat-mdc-menu-item-text{
-      display: flex;
-    align-items: center;
-    gap: 0.5rem;
 
-}

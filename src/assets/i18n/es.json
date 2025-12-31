@@ -55,7 +55,83 @@
   "layout": {
     "panel": "Panel",
     "appTitle": "Mi Aplicación",
-    "familySection": "Familia"
+    "familySection": "Familia",
+    "catalogsSection": "Catálogos",
+    "recipesSection": "Recetas"
+  },
+  "catalogs": {
+    "title": "Catálogos",
+    "subtitle": "Aquí puedes agregar y gestionar catálogos",
+    "add": "Agregar Catálogo",
+    "createTitle": "Agregar Catálogo",
+    "editTitle": "Editar Catálogo",
+    "searchPlaceholder": "Buscar catálogos por nombre...",
+    "name": "Nombre",
+    "description": "Descripción",
+    "createdAt": "Fecha de creación",
+    "updatedAt": "Fecha de modificación",
+    "lastModifiedBy": "Último usuario",
+    "empty": "No hay catálogos",
+    "emptySubtitle": "Crea tu primer catálogo para comenzar"
+  },
+  "recipes": {
+    "title": "Recetas",
+    "subtitle": "Aquí puedes agregar y programar recetas",
+    "add": "Agregar Receta",
+    "createTitle": "Agregar Receta",
+    "editTitle": "Editar Receta",
+    "photoAlt": "Foto del platillo",
+    "name": "Nombre del platillo",
+    "description": "Descripción",
+    "imageUrl": "URL de la imagen",
+    "ingredients": "Ingredientes",
+    "preparation": "Preparación",
+    "images": "Imágenes",
+    "uploadImages": "Subir imágenes",
+    "imagesHelp": "Máx. 2 imágenes. Formatos: JPG, JPEG, PNG.",
+    "imagesTooMany": "Solo puedes subir hasta 2 imágenes.",
+    "imagesInvalidType": "Formato de imagen no válido (solo JPG/JPEG/PNG).",
+    "imagesReadError": "Error leyendo las imágenes.",
+    "scheduleToggle": "Programar receta",
+    "scheduledAt": "Fecha de programación",
+    "empty": "No hay recetas",
+    "emptySubtitle": "Agrega tu primera receta para comenzar"
+  },
+  "messages": {
+    "created": "Catálogo \"{name}\" creado.",
+    "updated": "Catálogo \"{name}\" actualizado.",
+    "activated": "Catálogo \"{name}\" activado.",
+    "deactivated": "Catálogo \"{name}\" desactivado.",
+    "reverted": "Catálogo \"{name}\" reactivado."
+  },
+  "actions": {
+    "undo": "Deshacer",
+    "edit": "Editar",
+    "view": "Ver",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "history": {
+    "title": "Historial de actividad",
+    "date": "Fecha",
+    "type": "Acción",
+    "catalog": "Catálogo",
+    "user": "Usuario",
+    "before": "Antes",
+    "after": "Después",
+    "open": "Historial",
+    "typeCreate": "Creado",
+    "typeUpdate": "Actualizado",
+    "typeActivate": "Activado",
+    "typeDeactivate": "Desactivado",
+    "typeUndo": "Revertido"
   },
   "tools": {
     "language": "Idioma",
@@ -75,15 +151,6 @@
     "readOnly": "Solo lectura",
     "active": "Activo",
     "inactive": "Inactivo"
-  },
-  "actions": {
-    "edit": "Editar",
-    "deactivate": "Desactivar",
-    "activate": "Activar",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "create": "Crear",
-    "update": "Actualizar"
   },
   "errors": {
     "required": {

@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ isEdit ? ( 'recipes.editTitle' | translate ) : ( 'recipes.createTitle' | translate ) }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form">
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'recipes.name' | translate }}</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'recipes.ingredients' | translate }}</mat-label>
+      <textarea matInput formControlName="ingredients" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'recipes.preparation' | translate }}</mat-label>
+      <textarea matInput formControlName="preparation" rows="5"></textarea>
+    </mat-form-field>
+
+    <div class="images-section">
+      <label class="images-label">{{ 'recipes.images' | translate }}</label>
+      <div class="uploads">
+        <input #fileInput type="file" accept="image/png,image/jpeg" multiple (change)="onFilesSelected($event)" hidden>
+        <button mat-stroked-button (click)="fileInput.click()">{{ 'recipes.uploadImages' | translate }}</button>
+        <div class="previews">
+          <ng-container *ngFor="let p of previews; let i = index">
+            <div class="preview-item">
+              <img [src]="p" alt="preview">
+              <button mat-icon-button color="warn" class="remove-btn" (click)="removePreview(i)"><mat-icon>close</mat-icon></button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="help" *ngIf="imageErrors.length">
+        <div class="error" *ngFor="let e of imageErrors">{{ e | translate }}</div>
+      </div>
+      <div class="help small">{{ 'recipes.imagesHelp' | translate }}</div>
+    </div>
+
+    <mat-slide-toggle formControlName="scheduleToggle">{{ 'recipes.scheduleToggle' | translate }}</mat-slide-toggle>
+
+    <mat-form-field class="full-width" *ngIf="form.value.scheduleToggle">
+      <mat-label>{{ 'recipes.scheduledAt' | translate }}</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="scheduledAt">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">{{ 'actions.cancel' | translate }}</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || imageErrors.length">{{ 'actions.save' | translate }}</button>
+</mat-dialog-actions>

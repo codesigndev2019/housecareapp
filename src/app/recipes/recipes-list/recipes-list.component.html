@@ -1,0 +1,55 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">{{ 'recipes.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'recipes.subtitle' | translate }}</p>
+      </div>
+
+      <div class="header-actions">
+        <button mat-raised-button color="primary" class="add-btn" (click)="openEdit()">
+          <mat-icon>add</mat-icon>
+          <span>{{ 'recipes.add' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <ng-container *ngIf="recipes$ | async as recipes; else empty">
+      <div class="card" *ngFor="let r of recipes">
+        <mat-card class="recipe-card" role="article">
+          <img mat-card-image [src]="r.imageUrl" [alt]="'recipes.photoAlt' | translate">
+          <mat-card-content>
+            <h3 class="recipe-name">{{ r.name }}</h3>
+            <p class="recipe-desc">{{ r.description }}</p>
+            <div class="meta-row">
+              <span class="scheduled" *ngIf="r.scheduledAt">{{ 'recipes.scheduledAt' | translate }}: {{ r.scheduledAt | date:'mediumDate' }}</span>
+              <span class="status" [class.inactive]="!r.active">{{ r.active ? ( 'actions.active' | translate ) : ( 'actions.inactive' | translate ) }}</span>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions class="card-actions">
+            <button mat-icon-button aria-label="{{ 'actions.view' | translate }}" class="action-btn" (click)="openView(r)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="{{ 'actions.edit' | translate }}" class="action-btn" (click)="openEdit(r)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="{{ 'actions.deactivate' | translate }}" [class.active]="r.active" (click)="toggleActive(r)">
+              <mat-icon>{{ r.active ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </ng-container>
+
+    <ng-template #empty>
+      <div class="empty-state">
+        <p class="empty-title">{{ 'recipes.empty' | translate }}</p>
+        <p class="empty-subtitle">{{ 'recipes.emptySubtitle' | translate }}</p>
+        <button mat-stroked-button (click)="openEdit()">{{ 'actions.create' | translate }}</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

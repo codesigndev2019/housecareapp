@@ -568,6 +568,7 @@ label {
 
 /* Fix tooltips */
 .mat-mdc-tooltip {
+  /* Default: dark background with light text (good for light theme) */
   background: var(--text-primary) !important;
   color: var(--text-inverse) !important;
   font-size: 12px !important;
@@ -575,6 +576,12 @@ label {
   border-radius: var(--radius-md) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+/* In dark theme invert tooltip to keep good contrast */
+[data-theme="dark"] ::ng-deep .mat-mdc-tooltip {
+  background: var(--text-inverse) !important; /* white */
+  color: var(--text-primary) !important;     /* light text-primary is light but here text-primary becomes #f1f5f9; ensure contrast */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 /* Fix dialog overlays */
@@ -610,5 +617,46 @@ label {
 @media (prefers-reduced-motion: reduce) {
   .btn-primary { transition: none; transform: none; }
   .auth-hero-text.with-entrance { animation: none !important; }
+}
+
+/* Tools menu moved from internal-layout (global scope) */
+.mat-mdc-menu-panel.modern-tools-menu {
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-xl);
+  padding: 1rem;
+  min-width: 300px;
+  backdrop-filter: blur(20px);
+}
+.mat-mdc-menu-panel.modern-tools-menu .menu-section { margin-bottom: 0.75rem; }
+.mat-mdc-menu-panel.modern-tools-menu .menu-section:last-child { margin-bottom: 0; }
+.mat-mdc-menu-panel.modern-tools-menu .menu-title { display:flex; align-items:center; gap:0.5rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); padding:0.5rem 0.75rem; font-weight:700; letter-spacing:0.75px; margin-bottom:0.5rem; }
+.mat-mdc-menu-panel.modern-tools-menu .menu-title .section-icon { font-size:16px; width:16px; height:16px; }
+.mat-mdc-menu-panel.modern-tools-menu .menu-divider { margin:1rem 0; border-color:var(--color-surface-border); }
+.mat-mdc-menu-panel.modern-tools-menu button.mat-mdc-menu-item { min-height:48px; border-radius:var(--radius-lg); margin:2px 0; transition:all 0.2s ease; }
+.mat-mdc-menu-panel.modern-tools-menu button.mat-mdc-menu-item:hover { background: var(--hover-bg); }
+.mat-mdc-menu-panel.modern-tools-menu button.mat-mdc-menu-item:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
+
+.modern-tools-menu .language-item { display:flex; align-items:center; gap:12px; padding:12px 14px; margin:4px 0; border-radius:var(--radius-lg); transition: all 0.2s cubic-bezier(0.4,0,0.2,1); min-height:52px; font-weight:500; cursor:pointer; }
+.modern-tools-menu .language-item:hover { background: var(--hover-bg); transform: translateX(4px); }
+.modern-tools-menu .language-item.selected { background: var(--selected-bg); color: var(--color-primary); font-weight:600; box-shadow:var(--elevation-sm); }
+.modern-tools-menu .language-item .flag-container { display:inline-flex; align-items:center; justify-content:center; width:32px; height:22px; border-radius:4px; overflow:hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.15); flex-shrink:0; }
+.modern-tools-menu .language-item .language-text { flex:1; font-size:0.95rem; letter-spacing:0.25px; }
+.modern-tools-menu .language-item .menu-check { color:var(--color-accent); font-size:22px; width:22px; height:22px; flex-shrink:0; }
+
+@keyframes checkAppear { 0% { opacity:0; transform: scale(0.5); } 100% { opacity:1; transform: scale(1); } }
+
+.theme-section .theme-toggle-container { display:flex; align-items:center; justify-content:center; gap:0.875rem; padding:1.125rem 1rem 0.75rem; background: var(--color-surface-elevated); border-radius:var(--radius-lg); border:1px solid var(--color-surface-border); box-shadow:var(--elevation-sm); }
+.theme-section .theme-toggle-container .theme-icon { font-size:22px; width:22px; height:22px; color:var(--text-secondary); transition:all 0.3s cubic-bezier(0.4,0,0.2,1); }
+.theme-section .theme-toggle-container .theme-icon.active { color:var(--color-primary); transform: scale(1.15); }
+.theme-section .theme-toggle-container .modern-theme-toggle { --mdc-switch-selected-track-color: var(--color-primary); --mdc-switch-selected-handle-color: #ffffff; --mdc-switch-unselected-track-color: var(--color-surface-400); --mdc-switch-unselected-handle-color: #ffffff; }
+.theme-section .theme-label { text-align:center; padding:0.625rem 1rem 0.25rem; font-size:0.875rem; font-weight:600; color:var(--text-primary); letter-spacing:0.5px; text-transform:capitalize; }
+
+@media (max-width: 768px) {
+  .mat-mdc-menu-panel.modern-tools-menu { min-width: 280px; }
+}
+@media (max-width: 480px) {
+  .mat-mdc-menu-panel.modern-tools-menu { min-width:260px; padding:0.75rem; }
 }
 

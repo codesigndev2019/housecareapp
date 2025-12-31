@@ -1,0 +1,160 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">{{ 'catalogs.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'catalogs.subtitle' | translate }}</p>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button class="history-btn" (click)="openHistory()" [matTooltip]="'history.open' | translate">
+          <mat-icon>history</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" class="add-btn" (click)="openCreate()">
+          <mat-icon>add</mat-icon>
+          <span>{{ 'catalogs.add' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix class="search-icon">search</mat-icon>
+      <input 
+        matInput 
+        (keyup)="applyFilter($any($event.target).value)" 
+        [placeholder]="'catalogs.searchPlaceholder' | translate"
+        #searchInput>
+      <button 
+        mat-icon-button 
+        matSuffix 
+        *ngIf="dataSource.filter" 
+        (click)="applyFilter(''); searchInput.value=''" 
+        class="clear-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="catalogs-table">
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'catalogs.name' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              <span class="catalog-name">{{ row.name }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'catalogs.description' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              <span class="text-secondary">{{ row.description }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'catalogs.createdAt' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content date-cell">
+              <span>{{ row.createdAt | date:'short' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Updated At -->
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'catalogs.updatedAt' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content date-cell">
+              <span>{{ row.updatedAt | date:'short' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Last Modified By -->
+        <ng-container matColumnDef="lastModifiedBy">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'catalogs.lastModifiedBy' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content user-cell">
+              <mat-icon class="user-icon">person</mat-icon>
+              <span>{{ row.lastModifiedBy }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="actions-header"></th>
+          <td mat-cell *matCellDef="let row" class="actions-cell">
+            <div class="action-buttons">
+              <button 
+                mat-icon-button 
+                class="action-btn view-btn" 
+                (click)="openView(row)" 
+                [matTooltip]="'actions.view' | translate">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                class="action-btn edit-btn" 
+                (click)="openEdit(row)" 
+                [matTooltip]="'actions.edit' | translate">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                [class.active]="row.active"
+                [class.inactive]="!row.active"
+                class="action-btn toggle-btn" 
+                (click)="toggleActive(row)" 
+                [matTooltip]="(row.active ? 'actions.deactivate' : 'actions.activate') | translate">
+                <mat-icon>{{ row.active ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="dataSource.data.length === 0">
+        <mat-icon class="empty-icon">inventory_2</mat-icon>
+        <p class="empty-title">{{ 'catalogs.empty' | translate }}</p>
+        <p class="empty-subtitle">{{ 'catalogs.emptySubtitle' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator 
+      class="table-paginator"
+      [pageSizeOptions]="[5, 10, 20, 50]" 
+      [pageSize]="10"
+      showFirstLastButtons
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

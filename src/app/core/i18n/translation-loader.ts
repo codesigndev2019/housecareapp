@@ -17,11 +17,13 @@ export async function loadTranslations(lang: string, namespace?: string): Promis
     try {
       const res = await fetch(path);
       if (!res.ok) {
-        console.debug('loadTranslations: path not ok', path, res.status);
+        // quietly ignore missing paths unless debug enabled
+      // console.debug('loadTranslations: path not ok', path, res.status);
         continue;
       }
       const json = await res.json();
-      console.info('loadTranslations: loaded', path, json && Object.keys(json).length);
+      // Use logger when available (avoids console spam in prod)
+      // console.info('loadTranslations: loaded', path, json && Object.keys(json).length);
       return json;
     } catch (err) {
       console.debug('loadTranslations: error fetching', path, err);

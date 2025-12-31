@@ -39,7 +39,8 @@ export class EncryptionInterceptor implements HttpInterceptor {
 
       return cloned;
     } catch (err) {
-      console.warn('Encryption failed, proceeding without encryption', err);
+      // encryption failed; log for debug
+      // console.warn('Encryption failed, proceeding without encryption', err);
       return req;
     }
   }

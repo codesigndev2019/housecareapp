@@ -1,0 +1,18 @@
+:host { display: block; }
+.full-width { width: 100%; }
+mat-dialog-title { color: var(--text-primary); }
+mat-dialog-content { color: var(--text-primary); padding: 0 1.5rem; }
+mat-form-field ::ng-deep .mat-mdc-form-field-label { color: var(--text-secondary) !important; }
+textarea { min-height: 120px; }
+
+.images-section { margin: 1rem 0; }
+.images-label { display:block; font-weight:600; color:var(--text-secondary); margin-bottom:0.5rem; }
+.uploads { display:flex; align-items:center; gap:1rem; }
+.previews { display:flex; gap:0.5rem; margin-left: 0.5rem; }
+.preview-item { position:relative; width:72px; height:72px; border-radius:4px; overflow:hidden; border:1px solid var(--color-surface-border); }
+.preview-item img { width:100%; height:100%; object-fit:cover; }
+.preview-item .remove-btn { position:absolute; top:4px; right:4px; background: rgba(0,0,0,0.35); color:white; }
+
+.help { margin-top:0.5rem; color: var(--text-muted); }
+.help.small { font-size: 0.875rem; }
+.error { color: var(--color-error); }

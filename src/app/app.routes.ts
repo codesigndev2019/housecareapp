@@ -20,6 +20,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'family', loadComponent: () => import('./family/family-list/family-list.component').then(c => c.FamilyListComponent) },
+      { path: 'catalogs', loadComponent: () => import('./catalogs/add-catalogs/add-catalogs.component').then(c => c.AddCatalogsComponent) },
+      { path: 'recipes', loadComponent: () => import('./recipes/recipes-list/recipes-list.component').then(c => c.RecipesListComponent) },
       { path: '', redirectTo: 'family', pathMatch: 'full' }
     ]
   },

@@ -28,13 +28,9 @@ export class TranslatePipe implements PipeTransform, OnDestroy {
     
     const result = this.i18n.instant(key, fallback);
     
-    // Debug logging for first time or when value changes
-    if (this.lastKey !== key || this.lastValue !== result) {
-      console.log('TranslatePipe:', key, '=>', result);
-      this.lastKey = key;
-      this.lastValue = result;
-    }
-    
+    // Keep last value for change detection, but avoid noisy console output
+    this.lastKey = key;
+    this.lastValue = result;
     return result;
   }
 }

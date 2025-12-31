@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.view-content {
+  padding: 1.5rem;
+  color: var(--text-primary);
+}
+
+.image-container {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.recipe-image {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+.field-section {
+  margin-bottom: 1.5rem;
+}
+
+.field-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.field-text {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}

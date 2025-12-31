@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { I18nService } from './core/i18n/i18n.service';
+import { LoggerService } from './core/services/logger.service';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +11,9 @@ import { I18nService } from './core/i18n/i18n.service';
 })
 export class App implements OnInit {
   private i18n = inject(I18nService);
+  private logger = inject(LoggerService);
 
   ngOnInit() {
-    console.log('App component initialized, I18nService current language:', this.i18n.getCurrent());
+    this.logger.debug && this.logger.debug('App initialized - current language:', this.i18n.getCurrent());
   }
 }
