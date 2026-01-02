@@ -13,7 +13,7 @@ export class RecipesService {
       ingredients: '- 12 tortillas de maíz\n- 2 tazas de salsa verde\n- 2 tazas de queso oaxaca rallado\n- 1 cebolla\n- Crema de leche\n- Cilantro fresco',
       preparation: '1. Calienta la salsa verde en una olla.\n2. Pasa cada tortilla por la salsa.\n3. Rellena con queso y cebolla.\n4. Coloca en un refractario engrasado.\n5. Vierte el resto de la salsa encima.\n6. Cubre con más queso.\n7. Hornea a 180°C durante 25 minutos.\n8. Sirve con crema y cilantro.',
       imageUrl: '/assets/images/placeholder-food-1.jpg',
-      scheduledAt: null,
+      scheduledAt: '2026-01-02',
       active: true
     },
     {
@@ -24,6 +24,36 @@ export class RecipesService {
       preparation: '1. Lava y pica la lechuga romana.\n2. Prepara el aderezo: mezcla ajo, anchoas, limón y aceite.\n3. Tuesta el pan para los crutones.\n4. En un tazón, combina la lechuga con el aderezo.\n5. Agrega crutones y queso parmesano.\n6. Mezcla bien y sirve inmediatamente.',
       imageUrl: '/assets/images/placeholder-food-2.jpg',
       scheduledAt: '2026-01-03',
+      active: true
+    },
+    {
+      id: 'r3',
+      name: 'Tacos al pastor',
+      description: 'Tacos con carne de cerdo marinada y piña.',
+      ingredients: '- 500g carne de cerdo\n- Chile guajillo\n- Achiote\n- Piña\n- Tortillas de maíz\n- Cilantro y cebolla',
+      preparation: '1. Marina la carne con chiles y achiote.\n2. Deja reposar 4 horas.\n3. Cocina en trompo o sartén.\n4. Sirve en tortillas con piña, cilantro y cebolla.',
+      imageUrl: '/assets/images/placeholder-food-1.jpg',
+      scheduledAt: '2026-01-04',
+      active: true
+    },
+    {
+      id: 'r4',
+      name: 'Sopa de tortilla',
+      description: 'Sopa tradicional mexicana con tiras de tortilla crujientes.',
+      ingredients: '- Tortillas de maíz\n- Tomate\n- Chile pasilla\n- Crema\n- Queso fresco\n- Aguacate',
+      preparation: '1. Fríe las tiras de tortilla.\n2. Prepara el caldillo de tomate.\n3. Sirve caliente con los complementos.',
+      imageUrl: '/assets/images/placeholder-food-2.jpg',
+      scheduledAt: '2026-01-05',
+      active: true
+    },
+    {
+      id: 'r5',
+      name: 'Pollo a la plancha',
+      description: 'Pechuga de pollo con especias y ensalada fresca.',
+      ingredients: '- 2 pechugas de pollo\n- Limón\n- Ajo\n- Hierbas finas\n- Ensalada mixta',
+      preparation: '1. Marina el pollo con limón y ajo.\n2. Cocina a la plancha.\n3. Sirve con ensalada fresca.',
+      imageUrl: '/assets/images/placeholder-food-1.jpg',
+      scheduledAt: '2026-01-06',
       active: true
     }
   ];

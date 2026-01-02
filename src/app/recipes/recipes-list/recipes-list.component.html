@@ -17,31 +17,13 @@
 
   <div class="cards-grid">
     <ng-container *ngIf="recipes$ | async as recipes; else empty">
-      <div class="card" *ngFor="let r of recipes">
-        <mat-card class="recipe-card" role="article">
-          <img mat-card-image [src]="r.imageUrl" [alt]="'recipes.photoAlt' | translate">
-          <mat-card-content>
-            <h3 class="recipe-name">{{ r.name }}</h3>
-            <p class="recipe-desc">{{ r.description }}</p>
-            <div class="meta-row">
-              <span class="scheduled" *ngIf="r.scheduledAt">{{ 'recipes.scheduledAt' | translate }}: {{ r.scheduledAt | date:'mediumDate' }}</span>
-              <span class="status" [class.inactive]="!r.active">{{ r.active ? ( 'actions.active' | translate ) : ( 'actions.inactive' | translate ) }}</span>
-            </div>
-          </mat-card-content>
-
-          <mat-card-actions class="card-actions">
-            <button mat-icon-button aria-label="{{ 'actions.view' | translate }}" class="action-btn" (click)="openView(r)">
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button mat-icon-button aria-label="{{ 'actions.edit' | translate }}" class="action-btn" (click)="openEdit(r)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button aria-label="{{ 'actions.deactivate' | translate }}" [class.active]="r.active" (click)="toggleActive(r)">
-              <mat-icon>{{ r.active ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+      <app-recipe-card 
+        *ngFor="let r of recipes" 
+        [recipe]="r"
+        (view)="openView($event)"
+        (edit)="openEdit($event)"
+        (toggleActive)="toggleActive($event)">
+      </app-recipe-card>
     </ng-container>
 
     <ng-template #empty>

@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ data?.mode === 'edit' ? ('events.editTitle' | translate) : ('events.createTitle' | translate) }}</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill" class="full">
+    <mat-label i18nText="events.name">Nombre del evento</mat-label>
+    <input matInput formControlName="name">
+  </mat-form-field>
+
+  <div class="row">
+    <mat-form-field appearance="fill">
+      <mat-label i18nText="events.date">Fecha</mat-label>
+      <input matInput formControlName="date" [matDatepicker]="picker" readonly>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label i18nText="events.time">Hora</mat-label>
+      <input matInput formControlName="time" type="time">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="fill" class="full">
+    <mat-label i18nText="events.location">Lugar</mat-label>
+    <input matInput formControlName="location">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full">
+    <mat-label i18nText="events.participants">Personas</mat-label>
+    <mat-select formControlName="participants" multiple>
+      <mat-option *ngFor="let p of familyOptions" [value]="p.id">{{ p.fullName }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-slide-toggle formControlName="reminderEnabled" color="primary">{{ 'events.reminder' | translate }}</mat-slide-toggle>
+
+  <div *ngIf="form.get('reminderEnabled')?.value" class="reminder-row">
+    <mat-form-field appearance="fill">
+      <mat-label i18nText="events.reminderDate">Fecha recordatorio</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="reminderDate" readonly>
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label i18nText="events.reminderTime">Hora</mat-label>
+      <input matInput formControlName="reminderTime" type="time">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label i18nText="events.reminderFreq">Frecuencia</mat-label>
+      <mat-select formControlName="reminderFreq">
+        <mat-option value="once" i18nText="events.once">Una vez</mat-option>
+        <mat-option value="daily" i18nText="events.daily">Diaria</mat-option>
+        <mat-option value="weekly" i18nText="events.weekly">Semanal</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">{{ 'actions.cancel' | translate }}</button>
+  <button mat-raised-button color="primary" (click)="save()">{{ 'actions.save' | translate }}</button>
+</mat-dialog-actions>

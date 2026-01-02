@@ -1,0 +1,43 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">{{ 'chores.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'chores.subtitle' | translate }}</p>
+      </div>
+
+      <div class="header-actions">
+        <button mat-raised-button color="primary" class="add-btn" (click)="openCreate()">
+          <mat-icon>add</mat-icon>
+          <span>{{ 'chores.add' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <ng-container *ngIf="chores$ | async as chores">
+      <ng-container *ngIf="chores.length; else empty">
+        <app-chore-card
+          *ngFor="let chore of chores"
+          [chore]="chore"
+          (view)="openView($event)"
+          (edit)="openEdit($event)"
+          (delete)="onDelete($event)"
+          (toggleCompleted)="onToggleCompleted($event)">
+        </app-chore-card>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty-state">
+          <mat-icon>cleaning_services</mat-icon>
+          <p class="empty-title">{{ 'chores.empty' | translate }}</p>
+          <p class="empty-subtitle">{{ 'chores.emptySubtitle' | translate }}</p>
+          <button mat-stroked-button color="primary" (click)="openCreate()">
+            {{ 'chores.add' | translate }}
+          </button>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

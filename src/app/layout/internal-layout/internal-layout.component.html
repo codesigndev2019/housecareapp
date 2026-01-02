@@ -4,10 +4,24 @@
       <h3 i18nText="layout.appTitle"></h3>
     </div>
     <mat-nav-list>
+      <a mat-list-item routerLink="/app/dashboard" routerLinkActive="active">
+        <div class="nav-item-content">
+          <mat-icon aria-hidden="true">dashboard</mat-icon>
+          <span i18nText="layout.dashboardSection"></span>
+        </div>
+      </a>
+
       <a mat-list-item routerLink="/app/family" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">people</mat-icon>
           <span i18nText="layout.familySection"></span>
+        </div>
+      </a>
+
+      <a mat-list-item routerLink="/app/chores" routerLinkActive="active">
+        <div class="nav-item-content">
+          <mat-icon aria-hidden="true">cleaning_services</mat-icon>
+          <span i18nText="layout.choresSection"></span>
         </div>
       </a>
 
@@ -22,6 +36,13 @@
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">restaurant</mat-icon>
           <span i18nText="layout.recipesSection"></span>
+        </div>
+      </a>
+
+      <a mat-list-item routerLink="/app/events" routerLinkActive="active">
+        <div class="nav-item-content">
+          <mat-icon aria-hidden="true">event</mat-icon>
+          <span i18nText="layout.eventsSection"></span>
         </div>
       </a>
     </mat-nav-list>

@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 400px;
+
+  @media (max-width: 600px) {
+    min-width: auto;
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+.reminder-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+mat-slide-toggle {
+  margin-top: 0.5rem;
+}

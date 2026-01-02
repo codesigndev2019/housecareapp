@@ -2,8 +2,43 @@
 @use '@angular/material' as mat;
 @use './styles/variables' as *;
 
-// Material core and basic theming retained
+// Define custom theme palettes
+$primary-palette: mat.m2-define-palette(mat.$m2-indigo-palette);
+$accent-palette: mat.m2-define-palette(mat.$m2-purple-palette);
+$warn-palette: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Light theme
+$light-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $accent-palette,
+    warn: $warn-palette
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0
+));
+
+// Dark theme  
+$dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $accent-palette,
+    warn: $warn-palette
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0
+));
+
+// Include Material core styles
 @include mat.core();
+
+// Apply all component themes for light mode by default
+@include mat.all-component-themes($light-theme);
+
+// Dark theme styles
+[data-theme='dark'] {
+  @include mat.all-component-colors($dark-theme);
+}
 
 /* Global helper to ensure icons inside buttons are centered with text */
 button mat-icon,

@@ -1,0 +1,59 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h2>{{ 'dashboard.title' | translate }}</h2>
+    <p class="subtitle">{{ 'dashboard.subtitle' | translate }}</p>
+  </div>
+
+  <div class="sections">
+    <section class="section">
+      <h3>{{ 'dashboard.eventsSection' | translate }}</h3>
+      <div class="grid">
+        <ng-container *ngIf="events$ | async as events">
+          <ng-container *ngIf="events.length; else noEvents">
+            <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
+          </ng-container>
+          <ng-template #noEvents>
+            <div class="empty">{{ 'dashboard.noEvents' | translate }}</div>
+          </ng-template>
+        </ng-container>
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>{{ 'dashboard.choresSection' | translate }}</h3>
+      <div class="grid">
+        <ng-container *ngIf="chores$ | async as chores">
+          <ng-container *ngIf="chores.length; else noChores">
+            <app-chore-card 
+              *ngFor="let chore of chores" 
+              [chore]="chore"
+              [showActions]="false"
+              (toggleCompleted)="onToggleChore($event)">
+            </app-chore-card>
+          </ng-container>
+          <ng-template #noChores>
+            <div class="empty">{{ 'dashboard.noChores' | translate }}</div>
+          </ng-template>
+        </ng-container>
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>{{ 'dashboard.recipesSection' | translate }}</h3>
+      <div class="grid">
+        <ng-container *ngIf="recipes$ | async as recs">
+          <ng-container *ngIf="recs.length; else noRecipes">
+            <app-recipe-card 
+              *ngFor="let r of recs" 
+              [recipe]="r" 
+              [showActions]="false">
+            </app-recipe-card>
+          </ng-container>
+          <ng-template #noRecipes>
+            <div class="empty">{{ 'dashboard.noRecipes' | translate }}</div>
+          </ng-template>
+        </ng-container>
+      </div>
+    </section>
+  </div>
+</div>

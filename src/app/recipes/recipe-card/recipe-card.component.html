@@ -1,0 +1,23 @@
+<mat-card class="recipe-card" role="article">
+  <img mat-card-image [src]="recipe.imageUrl" [alt]="'recipes.photoAlt' | translate">
+  <mat-card-content>
+    <h3 class="recipe-name">{{ recipe.name }}</h3>
+    <p class="recipe-desc">{{ recipe.description }}</p>
+    <div class="meta-row">
+      <span class="scheduled" *ngIf="recipe.scheduledAt">{{ 'recipes.scheduledAt' | translate }}: {{ recipe.scheduledAt | date:'mediumDate' }}</span>
+      <span class="status" [class.inactive]="!recipe.active">{{ recipe.active ? ('actions.active' | translate) : ('actions.inactive' | translate) }}</span>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions class="card-actions" *ngIf="showActions">
+    <button mat-icon-button [attr.aria-label]="'actions.view' | translate" class="action-btn" (click)="onView()">
+      <mat-icon>visibility</mat-icon>
+    </button>
+    <button mat-icon-button [attr.aria-label]="'actions.edit' | translate" class="action-btn" (click)="onEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button [attr.aria-label]="'actions.deactivate' | translate" [class.active]="recipe.active" (click)="onToggleActive()">
+      <mat-icon>{{ recipe.active ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

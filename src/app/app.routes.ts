@@ -19,10 +19,13 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/internal-layout/internal-layout.component').then(c => c.InternalLayoutComponent),
     canActivate: [AuthGuard],
     children: [
+      { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(c => c.DashboardComponent) },
       { path: 'family', loadComponent: () => import('./family/family-list/family-list.component').then(c => c.FamilyListComponent) },
+      { path: 'chores', loadComponent: () => import('./chores/chores-list/chores-list.component').then(c => c.ChoresListComponent) },
       { path: 'catalogs', loadComponent: () => import('./catalogs/add-catalogs/add-catalogs.component').then(c => c.AddCatalogsComponent) },
       { path: 'recipes', loadComponent: () => import('./recipes/recipes-list/recipes-list.component').then(c => c.RecipesListComponent) },
-      { path: '', redirectTo: 'family', pathMatch: 'full' }
+      { path: 'events', loadComponent: () => import('./events/events-list/events-list.component').then(c => c.EventsListComponent) },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
   { path: '', redirectTo: 'auth', pathMatch: 'full' },

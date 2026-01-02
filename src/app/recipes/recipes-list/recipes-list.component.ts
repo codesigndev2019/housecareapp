@@ -9,12 +9,13 @@ import { Recipe } from '../models/recipe.model';
 import { RecipeViewDialogComponent } from '../recipe-view-dialog/recipe-view-dialog.component';
 import { RecipeEditDialogComponent } from '../recipe-edit-dialog/recipe-edit-dialog.component';
 import { RecipesService } from '../recipes.service';
+import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-recipes-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDialogModule, TranslatePipe],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDialogModule, TranslatePipe, RecipeCardComponent],
   templateUrl: './recipes-list.component.html',
   styleUrls: ['./recipes-list.component.scss']
 })

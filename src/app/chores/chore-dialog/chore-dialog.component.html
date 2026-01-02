@@ -1,0 +1,48 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>{{ getTitle() | translate }}</h2>
+    <button mat-icon-button (click)="onCancel()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="dialog-content">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'chores.name' | translate }}</mat-label>
+      <input matInput formControlName="name" [readonly]="isViewMode">
+      <mat-icon matPrefix>assignment</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'chores.responsible' | translate }}</mat-label>
+      <mat-select formControlName="responsibleId">
+        <mat-option value="">{{ 'chores.selectResponsible' | translate }}</mat-option>
+        <mat-option *ngFor="let member of familyMembers$ | async" [value]="member.id">
+          {{ member.fullName }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'chores.frequency' | translate }}</mat-label>
+      <mat-select formControlName="frequency">
+        <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
+          {{ freq.labelKey | translate }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>schedule</mat-icon>
+    </mat-form-field>
+  </form>
+
+  <div class="dialog-actions" *ngIf="!isViewMode">
+    <button mat-button (click)="onCancel()">{{ 'actions.cancel' | translate }}</button>
+    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+      {{ (data.mode === 'edit' ? 'actions.update' : 'actions.create') | translate }}
+    </button>
+  </div>
+
+  <div class="dialog-actions" *ngIf="isViewMode">
+    <button mat-raised-button color="primary" (click)="onCancel()">{{ 'actions.close' | translate }}</button>
+  </div>
+</div>

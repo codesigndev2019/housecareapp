@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    margin: 0.35rem 0 0;
+    opacity: 0.6;
+    font-size: 0.95rem;
+  }
+
+  button {
+    border-radius: 12px;
+    padding: 0 1.5rem;
+    height: 44px;
+    font-weight: 500;
+  }
+}
+
+.events-list {
+  min-height: 300px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+
+  app-event-card {
+    display: flex;
+    min-height: 280px;
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  opacity: 0.5;
+
+  &::before {
+    content: '📅';
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+}
