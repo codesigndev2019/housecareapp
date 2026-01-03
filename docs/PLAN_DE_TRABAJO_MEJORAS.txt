@@ -1,0 +1,1740 @@
+================================================================================
+                     PLAN DE TRABAJO - MEJORAS DEL PROYECTO
+                            HouseCare App (Angular 21)
+================================================================================
+
+Fecha de Análisis: 2 de Enero de 2026
+Documento: Plan de Implementación de Mejoras
+
+================================================================================
+                              RESUMEN EJECUTIVO
+================================================================================
+
+Después de un análisis exhaustivo del proyecto, se han identificado las 
+siguientes áreas de mejora organizadas por prioridad y esfuerzo estimado.
+
+MÉTRICAS DEL ANÁLISIS:
+----------------------
+- Vulnerabilidades de Seguridad: 5 (1 Crítica, 1 Alta, 2 Media, 1 Baja)
+- Código Duplicado: 4 patrones principales
+- Problemas de Buenas Prácticas Angular: 4
+- Inconsistencias i18n: 3
+- Problemas de Theming: 3
+- Cobertura de Tests: ~20% (necesita mejora significativa)
+
+================================================================================
+                        FASE 1: SEGURIDAD (CRÍTICO)
+                        Duración Estimada: 3-5 días
+================================================================================
+
+TAREA 1.1: Eliminar/Deshabilitar DevLoginComponent
+--------------------------------------------------
+Prioridad: CRÍTICA
+Esfuerzo: 0.5 días
+Archivo: src/app/dev-login/dev-login.component.ts
+
+Descripción:
+El componente DevLoginComponent permite autenticación sin credenciales válidas,
+estableciendo un token estático "dev" que bypasea toda la seguridad.
+
+Acciones:
+[ ] Eliminar el componente dev-login de la carpeta src/app/dev-login/
+[ ] Eliminar la ruta correspondiente en src/app/app.routes.ts
+[ ] Alternativa: Compilación condicional usando environment.production
+    - Agregar en environment.ts: enableDevLogin: false
+    - En app.routes.ts: if (!environment.production) { agregar ruta }
+
+Código sugerido para compilación condicional:
+```typescript
+// app.routes.ts
+const devRoutes = isDevMode() ? [
+  { path: 'dev-login', loadComponent: () => import('./dev-login/dev-login.component')
+    .then(c => c.DevLoginComponent) }
+] : [];
+
+export const routes: Routes = [
+  ...devRoutes,
+  // resto de rutas
+];
+```
+
+--------------------------------------------------
+
+TAREA 1.2: Validación de Expiración de Token JWT
+--------------------------------------------------
+Prioridad: ALTA
+Esfuerzo: 1 día
+Archivo: src/app/core/guards/auth.guard.ts
+
+Descripción:
+El AuthGuard solo verifica si existe un token, no si está expirado o es válido.
+
+Acciones:
+[ ] Crear función de decodificación de JWT
+[ ] Validar claim 'exp' del token
+[ ] Redirigir a login si el token está expirado
+[ ] Implementar refresh token automático antes de expiración
+
+Código sugerido:
+```typescript
+// src/app/core/services/jwt.service.ts (nuevo archivo)
+@Injectable({ providedIn: 'root' })
+export class JwtService {
+  decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch {
+      return null;
+    }
+  }
+
+  isTokenExpired(token: string): boolean {
+    const decoded = this.decodeToken(token);
+    if (!decoded?.exp) return true;
+    const expirationDate = new Date(decoded.exp * 1000);
+    return expirationDate < new Date();
+  }
+
+  getTokenExpirationDate(token: string): Date | null {
+    const decoded = this.decodeToken(token);
+    return decoded?.exp ? new Date(decoded.exp * 1000) : null;
+  }
+}
+
+// auth.guard.ts actualizado
+export const authGuard: CanActivateFn = () => {
+  const tokenStorage = inject(TokenStorageService);
+  const jwtService = inject(JwtService);
+  const router = inject(Router);
+  
+  const token = tokenStorage.getToken();
+  
+  if (!token || jwtService.isTokenExpired(token)) {
+    tokenStorage.clear();
+    return router.createUrlTree(['/auth/login']);
+  }
+  
+  return true;
+};
+```
+
+--------------------------------------------------
+
+TAREA 1.3: Migrar Almacenamiento de JWT
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1.5 días
+Archivo: src/app/core/services/token-storage.service.ts
+
+Descripción:
+Actualmente los tokens se almacenan en localStorage, vulnerable a XSS.
+
+Opciones de Implementación:
+
+OPCIÓN A (Recomendada): Cookies HttpOnly
+- Requiere cambios en el backend
+- El servidor debe establecer cookies HttpOnly en la respuesta de login
+- El interceptor debe dejar de enviar el token en headers (la cookie se envía automáticamente)
+
+OPCIÓN B: Memory + SessionStorage
+- Token de acceso en memoria (variable de servicio)
+- Refresh token en sessionStorage
+- Re-autenticar en nueva pestaña
+
+Acciones para Opción B:
+[ ] Modificar TokenStorageService para usar memoria para access token
+[ ] Implementar mecanismo de refresh automático
+[ ] Manejar cierre de pestaña/navegador
+
+```typescript
+// token-storage.service.ts (Opción B)
+@Injectable({ providedIn: 'root' })
+export class TokenStorageService {
+  private accessToken: string | null = null; // En memoria
+  
+  setToken(token: string): void {
+    this.accessToken = token;
+  }
+  
+  getToken(): string | null {
+    return this.accessToken;
+  }
+  
+  setRefreshToken(token: string): void {
+    sessionStorage.setItem('refresh_token', token);
+  }
+  
+  getRefreshToken(): string | null {
+    return sessionStorage.getItem('refresh_token');
+  }
+}
+```
+
+--------------------------------------------------
+
+TAREA 1.4: Protección CSRF
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+Archivo: src/app/core/interceptors/ (nuevo archivo)
+
+Descripción:
+No existe protección CSRF para operaciones de escritura.
+
+Acciones:
+[ ] Crear CsrfInterceptor
+[ ] Obtener token CSRF del backend
+[ ] Agregar header X-XSRF-TOKEN en requests POST/PUT/DELETE
+
+```typescript
+// csrf.interceptor.ts
+export const csrfInterceptor: HttpInterceptorFn = (req, next) => {
+  const csrfToken = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')[1];
+    
+  if (csrfToken && !req.method.match(/^(GET|HEAD|OPTIONS)$/)) {
+    req = req.clone({
+      headers: req.headers.set('X-XSRF-TOKEN', csrfToken)
+    });
+  }
+  
+  return next(req);
+};
+```
+
+--------------------------------------------------
+
+TAREA 1.5: Validación de Tamaño de Archivos
+--------------------------------------------------
+Prioridad: BAJA
+Esfuerzo: 0.5 días
+Archivo: src/app/recipes/recipe-edit-dialog/recipe-edit-dialog.component.ts
+
+Descripción:
+La carga de imágenes no valida el tamaño de los archivos.
+
+Acciones:
+[ ] Agregar constante MAX_FILE_SIZE_MB
+[ ] Validar tamaño antes de procesar
+[ ] Mostrar error traducido si excede el límite
+
+```typescript
+private readonly MAX_FILE_SIZE_MB = 5;
+
+onFilesSelected(ev: Event) {
+  const files = Array.from((ev.target as HTMLInputElement).files || []);
+  
+  const oversizedFiles = files.filter(f => f.size > this.MAX_FILE_SIZE_MB * 1024 * 1024);
+  if (oversizedFiles.length) {
+    this.imageErrors.push('recipes.fileTooLarge');
+    return;
+  }
+  // resto del código...
+}
+```
+
+
+================================================================================
+                   FASE 2: ARQUITECTURA Y CÓDIGO DUPLICADO
+                        Duración Estimada: 5-7 días
+================================================================================
+
+TAREA 2.1: Crear BaseCrudService<T> Genérico
+--------------------------------------------------
+Prioridad: ALTA
+Esfuerzo: 1.5 días
+Ubicación: src/app/shared/base/base-crud.service.ts (nuevo)
+
+Descripción:
+5 servicios (Chores, Events, Recipes, Family, Catalogs) tienen código idéntico
+para operaciones CRUD. Se debe extraer a una clase base.
+
+Servicios afectados:
+- src/app/chores/chores.service.ts
+- src/app/events/events.service.ts
+- src/app/recipes/recipes.service.ts
+- src/app/family/family.service.ts
+- src/app/catalogs/catalogs.service.ts
+
+Implementación:
+```typescript
+// src/app/shared/base/base-crud.service.ts
+import { BehaviorSubject, Observable, of } from 'rxjs';
+
+export interface BaseEntity {
+  id: string;
+}
+
+export abstract class BaseCrudService<T extends BaseEntity> {
+  protected data: T[] = [];
+  protected subject = new BehaviorSubject<T[]>([]);
+
+  constructor(initialData: T[] = []) {
+    this.data = [...initialData];
+    this.subject.next(this.data);
+  }
+
+  list(): Observable<T[]> {
+    return this.subject.asObservable();
+  }
+
+  get(id: string): Observable<T | undefined> {
+    return of(this.data.find(item => item.id === id));
+  }
+
+  create(payload: Partial<T>): Observable<T> {
+    const newItem = this.buildEntity(payload);
+    this.data = [newItem, ...this.data];
+    this.subject.next([...this.data]);
+    return of(newItem);
+  }
+
+  update(id: string, payload: Partial<T>): Observable<T | undefined> {
+    const index = this.data.findIndex(item => item.id === id);
+    if (index === -1) return of(undefined);
+    
+    this.data[index] = { ...this.data[index], ...payload };
+    this.subject.next([...this.data]);
+    return of(this.data[index]);
+  }
+
+  delete(id: string): Observable<boolean> {
+    const lengthBefore = this.data.length;
+    this.data = this.data.filter(item => item.id !== id);
+    this.subject.next([...this.data]);
+    return of(this.data.length < lengthBefore);
+  }
+
+  protected generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+  }
+
+  protected abstract buildEntity(payload: Partial<T>): T;
+}
+```
+
+Ejemplo de refactorización de ChoresService:
+```typescript
+// chores.service.ts refactorizado
+@Injectable({ providedIn: 'root' })
+export class ChoresService extends BaseCrudService<Chore> {
+  constructor() {
+    super(INITIAL_CHORES_DATA);
+  }
+
+  protected buildEntity(payload: Partial<Chore>): Chore {
+    return {
+      id: this.generateId(),
+      name: payload.name || '',
+      responsibleId: payload.responsibleId || '',
+      frequency: payload.frequency || 'weekly',
+      completed: payload.completed ?? false,
+      active: true
+    };
+  }
+
+  toggleCompleted(id: string): Observable<Chore | undefined> {
+    const item = this.data.find(c => c.id === id);
+    if (!item) return of(undefined);
+    return this.update(id, { completed: !item.completed });
+  }
+}
+```
+
+Acciones:
+[ ] Crear BaseCrudService genérico
+[ ] Refactorizar ChoresService para extender BaseCrudService
+[ ] Refactorizar EventsService
+[ ] Refactorizar RecipesService
+[ ] Refactorizar FamilyService
+[ ] Refactorizar CatalogsService
+[ ] Actualizar tests unitarios
+
+--------------------------------------------------
+
+TAREA 2.2: Crear BaseDialogComponent<TData, TResult>
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1 día
+Ubicación: src/app/shared/base/base-dialog.component.ts (nuevo)
+
+Descripción:
+5 componentes de diálogo comparten patrones idénticos de formulario,
+inyección de datos y lógica de guardar/cancelar.
+
+Componentes afectados:
+- src/app/chores/chore-dialog/
+- src/app/events/event-dialog/
+- src/app/recipes/recipe-edit-dialog/
+- src/app/catalogs/catalog-edit-dialog/
+- src/app/family/family-member-dialog/
+
+Implementación:
+```typescript
+// src/app/shared/base/base-dialog.component.ts
+import { Directive, inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface DialogData<T> {
+  mode: 'create' | 'edit' | 'view';
+  entity?: T;
+}
+
+export interface DialogResult<T> {
+  action: 'save' | 'cancel';
+  payload?: T;
+}
+
+@Directive()
+export abstract class BaseDialogComponent<T> {
+  protected fb = inject(FormBuilder);
+  protected dialogRef = inject(MatDialogRef<BaseDialogComponent<T>>);
+  protected data: DialogData<T> = inject(MAT_DIALOG_DATA);
+
+  form!: FormGroup;
+  isViewMode = this.data.mode === 'view';
+
+  constructor() {
+    this.form = this.createForm();
+    if (this.isViewMode) {
+      this.form.disable();
+    }
+  }
+
+  protected abstract createForm(): FormGroup;
+  
+  abstract getTitleKey(): string;
+
+  save(): void {
+    if (this.form.invalid) return;
+    this.dialogRef.close({
+      action: 'save',
+      payload: this.form.value
+    } as DialogResult<T>);
+  }
+
+  cancel(): void {
+    this.dialogRef.close({ action: 'cancel' } as DialogResult<T>);
+  }
+}
+```
+
+Ejemplo de refactorización:
+```typescript
+// chore-dialog.component.ts refactorizado
+@Component({...})
+export class ChoreDialogComponent extends BaseDialogComponent<Chore> {
+  familyMembers$ = inject(FamilyService).list();
+  
+  frequencies = [
+    { value: 'daily', labelKey: 'chores.daily' },
+    { value: 'twice-weekly', labelKey: 'chores.twiceWeekly' },
+    { value: 'weekly', labelKey: 'chores.weekly' }
+  ];
+
+  protected createForm(): FormGroup {
+    return this.fb.group({
+      name: [this.data.entity?.name || '', Validators.required],
+      responsibleId: [this.data.entity?.responsibleId || ''],
+      frequency: [this.data.entity?.frequency || 'weekly', Validators.required]
+    });
+  }
+
+  getTitleKey(): string {
+    return this.data.mode === 'edit' ? 'chores.editTitle' : 'chores.createTitle';
+  }
+}
+```
+
+Acciones:
+[ ] Crear BaseDialogComponent
+[ ] Refactorizar ChoreDialogComponent
+[ ] Refactorizar EventDialogComponent
+[ ] Refactorizar RecipeEditDialogComponent
+[ ] Refactorizar CatalogEditDialogComponent
+[ ] Refactorizar FamilyMemberDialogComponent
+[ ] Crear tests para BaseDialogComponent
+
+--------------------------------------------------
+
+TAREA 2.3: Crear FamilyMemberResolverService
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+Ubicación: src/app/shared/services/family-resolver.service.ts (nuevo)
+
+Descripción:
+ChoreCardComponent y EventCardComponent tienen código duplicado para
+resolver IDs de miembros de familia a nombres completos.
+
+Implementación:
+```typescript
+// src/app/shared/services/family-resolver.service.ts
+@Injectable({ providedIn: 'root' })
+export class FamilyResolverService {
+  private familyMap = signal<Record<string, string>>({});
+  
+  constructor(private familyService: FamilyService) {
+    this.familyService.list().subscribe(members => {
+      const map = members.reduce((acc, m) => {
+        acc[m.id] = m.fullName;
+        return acc;
+      }, {} as Record<string, string>);
+      this.familyMap.set(map);
+    });
+  }
+
+  resolveName(id: string): string {
+    return this.familyMap()[id] || id;
+  }
+
+  resolveNames(ids: string[]): string[] {
+    return ids.map(id => this.resolveName(id));
+  }
+
+  getMemberName$(id: string): Observable<string> {
+    return this.familyService.list().pipe(
+      map(members => members.find(m => m.id === id)?.fullName || id)
+    );
+  }
+}
+```
+
+Alternativa - Crear Pipe reutilizable:
+```typescript
+// src/app/shared/pipes/family-member-name.pipe.ts
+@Pipe({ name: 'familyMemberName', standalone: true })
+export class FamilyMemberNamePipe implements PipeTransform {
+  private resolver = inject(FamilyResolverService);
+  
+  transform(id: string): string {
+    return this.resolver.resolveName(id);
+  }
+}
+```
+
+Uso en templates:
+```html
+<!-- Antes -->
+<span>{{ responsibleName }}</span>
+
+<!-- Después -->
+<span>{{ chore.responsibleId | familyMemberName }}</span>
+```
+
+Acciones:
+[ ] Crear FamilyResolverService
+[ ] Crear FamilyMemberNamePipe
+[ ] Refactorizar ChoreCardComponent
+[ ] Refactorizar EventCardComponent
+[ ] Actualizar tests
+
+--------------------------------------------------
+
+TAREA 2.4: Crear FileUploadComponent Reutilizable
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1.5 días
+Ubicación: src/app/shared/components/file-upload/
+
+Descripción:
+El código de carga de archivos en RecipeEditDialogComponent debe extraerse
+a un componente reutilizable con configuración dinámica.
+
+Estructura de archivos:
+```
+src/app/shared/components/file-upload/
+├── file-upload.component.ts
+├── file-upload.component.html
+├── file-upload.component.scss
+└── file-upload.service.ts
+```
+
+Implementación:
+```typescript
+// file-upload.component.ts
+@Component({
+  selector: 'app-file-upload',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, TranslatePipe],
+  templateUrl: './file-upload.component.html',
+  styleUrls: ['./file-upload.component.scss']
+})
+export class FileUploadComponent {
+  // Configuración de inputs
+  acceptTypes = input<string>('image/png,image/jpeg');
+  maxFiles = input<number>(5);
+  maxSizeMb = input<number>(5);
+  multiple = input<boolean>(true);
+  showPreviews = input<boolean>(true);
+  
+  // Outputs
+  filesSelected = output<File[]>();
+  filesChanged = output<FilePreview[]>();
+  fileRemoved = output<string>();
+  
+  // Estado interno
+  previews = signal<FilePreview[]>([]);
+  errors = signal<string[]>([]);
+  dragOver = signal(false);
+  
+  // Validación de archivos
+  private validateFiles(files: File[]): ValidationResult {
+    const errors: string[] = [];
+    
+    if (files.length > this.maxFiles()) {
+      errors.push('upload.tooManyFiles');
+    }
+    
+    const invalidTypes = files.filter(f => !this.isValidType(f));
+    if (invalidTypes.length) {
+      errors.push('upload.invalidType');
+    }
+    
+    const oversized = files.filter(f => f.size > this.maxSizeMb() * 1024 * 1024);
+    if (oversized.length) {
+      errors.push('upload.fileTooLarge');
+    }
+    
+    return { valid: errors.length === 0, errors };
+  }
+  
+  private isValidType(file: File): boolean {
+    const accepted = this.acceptTypes().split(',').map(t => t.trim());
+    return accepted.some(type => {
+      if (type.endsWith('/*')) {
+        return file.type.startsWith(type.replace('/*', ''));
+      }
+      return file.type === type;
+    });
+  }
+  
+  // Drag & Drop
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver.set(true);
+  }
+  
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver.set(false);
+  }
+  
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver.set(false);
+    const files = Array.from(event.dataTransfer?.files || []);
+    this.processFiles(files);
+  }
+  
+  onFilesSelected(event: Event): void {
+    const files = Array.from((event.target as HTMLInputElement).files || []);
+    this.processFiles(files);
+  }
+  
+  private async processFiles(files: File[]): Promise<void> {
+    const validation = this.validateFiles(files);
+    this.errors.set(validation.errors);
+    
+    if (!validation.valid) return;
+    
+    const newPreviews: FilePreview[] = [];
+    for (const file of files) {
+      const preview = await this.createPreview(file);
+      newPreviews.push(preview);
+    }
+    
+    this.previews.update(current => [...current, ...newPreviews]);
+    this.filesSelected.emit(files);
+    this.filesChanged.emit(this.previews());
+  }
+  
+  private createPreview(file: File): Promise<FilePreview> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve({
+          id: crypto.randomUUID(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: reader.result as string,
+          file
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  removeFile(id: string): void {
+    this.previews.update(current => current.filter(p => p.id !== id));
+    this.fileRemoved.emit(id);
+    this.filesChanged.emit(this.previews());
+  }
+}
+
+interface FilePreview {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+  file: File;
+}
+
+interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+```
+
+Template:
+```html
+<!-- file-upload.component.html -->
+<div class="upload-container">
+  <div class="upload-zone" 
+       [class.drag-over]="dragOver()"
+       (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)"
+       role="button"
+       tabindex="0"
+       (keydown.enter)="fileInput.click()"
+       [attr.aria-label]="'upload.dropzone' | translate">
+    
+    <input #fileInput 
+           type="file" 
+           [accept]="acceptTypes()" 
+           [multiple]="multiple()" 
+           (change)="onFilesSelected($event)" 
+           hidden>
+    
+    <mat-icon>cloud_upload</mat-icon>
+    <p class="primary-text">{{ 'upload.dragOrClick' | translate }}</p>
+    <p class="secondary-text">{{ 'upload.supportedFormats' | translate }}: {{ acceptTypes() }}</p>
+    
+    <button mat-stroked-button type="button" (click)="fileInput.click()">
+      <mat-icon>folder_open</mat-icon>
+      {{ 'upload.browse' | translate }}
+    </button>
+  </div>
+
+  @if (showPreviews() && previews().length) {
+    <div class="previews-container">
+      @for (preview of previews(); track preview.id) {
+        <div class="preview-item">
+          @if (preview.type.startsWith('image/')) {
+            <img [src]="preview.url" [alt]="preview.name">
+          } @else {
+            <mat-icon class="file-icon">insert_drive_file</mat-icon>
+          }
+          <span class="file-name">{{ preview.name }}</span>
+          <button mat-icon-button 
+                  type="button"
+                  (click)="removeFile(preview.id)"
+                  [attr.aria-label]="'upload.remove' | translate">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (errors().length) {
+    <div class="errors-container" role="alert">
+      @for (error of errors(); track error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </div>
+  }
+</div>
+```
+
+Claves i18n necesarias:
+```json
+{
+  "upload": {
+    "dropzone": "Zona de carga de archivos",
+    "dragOrClick": "Arrastra archivos aquí o haz clic para seleccionar",
+    "browse": "Seleccionar archivos",
+    "supportedFormats": "Formatos soportados",
+    "remove": "Eliminar archivo",
+    "tooManyFiles": "Demasiados archivos. Máximo permitido: {max}",
+    "invalidType": "Tipo de archivo no válido",
+    "fileTooLarge": "Archivo demasiado grande. Máximo: {max}MB"
+  }
+}
+```
+
+Uso en RecipeEditDialogComponent:
+```html
+<!-- Antes -->
+<input #fileInput type="file" accept="image/png,image/jpeg" multiple 
+       (change)="onFilesSelected($event)" hidden>
+<!-- ... código duplicado ... -->
+
+<!-- Después -->
+<app-file-upload
+  acceptTypes="image/png,image/jpeg"
+  [maxFiles]="2"
+  [maxSizeMb]="5"
+  (filesChanged)="onImagesChanged($event)">
+</app-file-upload>
+```
+
+Acciones:
+[ ] Crear FileUploadComponent
+[ ] Crear estilos con soporte de temas
+[ ] Agregar claves i18n en español e inglés
+[ ] Refactorizar RecipeEditDialogComponent para usar el nuevo componente
+[ ] Crear tests unitarios
+[ ] Documentar uso del componente
+
+--------------------------------------------------
+
+TAREA 2.5: Crear EmptyStateComponent Reutilizable
+--------------------------------------------------
+Prioridad: BAJA
+Esfuerzo: 0.5 días
+Ubicación: src/app/shared/components/empty-state/
+
+Descripción:
+Los estados vacíos se implementan de manera inconsistente en diferentes listas.
+
+Implementación:
+```typescript
+@Component({
+  selector: 'app-empty-state',
+  standalone: true,
+  imports: [CommonModule, MatIconModule, TranslatePipe],
+  template: `
+    <div class="empty-state">
+      <mat-icon>{{ icon() }}</mat-icon>
+      <h3>{{ title() | translate }}</h3>
+      @if (subtitle()) {
+        <p>{{ subtitle() | translate }}</p>
+      }
+      <ng-content></ng-content>
+    </div>
+  `,
+  styleUrls: ['./empty-state.component.scss']
+})
+export class EmptyStateComponent {
+  icon = input<string>('inbox');
+  title = input.required<string>();
+  subtitle = input<string>('');
+}
+```
+
+Uso:
+```html
+<app-empty-state 
+  icon="cleaning_services"
+  title="chores.empty"
+  subtitle="chores.emptySubtitle">
+  <button mat-stroked-button (click)="openCreate()">
+    {{ 'chores.add' | translate }}
+  </button>
+</app-empty-state>
+```
+
+Acciones:
+[ ] Crear EmptyStateComponent
+[ ] Refactorizar ChoresListComponent
+[ ] Refactorizar RecipesListComponent
+[ ] Refactorizar EventsListComponent
+[ ] Refactorizar AddCatalogsComponent
+[ ] Agregar estado vacío a FamilyListComponent
+
+
+================================================================================
+                      FASE 3: GESTIÓN DE ESTADO (NgRx)
+                        Duración Estimada: 5-7 días
+================================================================================
+
+TAREA 3.1: Configurar NgRx Signals Store
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1 día
+Ubicación: src/app/store/
+
+Descripción:
+Implementar NgRx Signals (recomendado para Angular 21) para gestión de estado
+centralizada de datos compartidos.
+
+Dependencias a instalar:
+```bash
+npm install @ngrx/signals
+```
+
+Estructura:
+```
+src/app/store/
+├── index.ts                    # Exports
+├── auth.store.ts               # Sesión de usuario, JWT
+├── family.store.ts             # Miembros de familia (compartido)
+├── ui.store.ts                 # Tema, idioma, loading
+├── chores.store.ts             
+├── events.store.ts
+├── recipes.store.ts
+└── catalogs.store.ts
+```
+
+Implementación auth.store.ts:
+```typescript
+import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { inject, computed } from '@angular/core';
+import { pipe, switchMap, tap } from 'rxjs';
+import { AuthService } from '../auth/services/auth.service';
+import { JwtService } from '../core/services/jwt.service';
+import { tapResponse } from '@ngrx/operators';
+
+interface AuthState {
+  token: string | null;
+  refreshToken: string | null;
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: AuthState = {
+  token: null,
+  refreshToken: null,
+  user: null,
+  loading: false,
+  error: null
+};
+
+export const AuthStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed((store, jwtService = inject(JwtService)) => ({
+    isAuthenticated: computed(() => {
+      const token = store.token();
+      return !!token && !jwtService.isTokenExpired(token);
+    }),
+    tokenExpiration: computed(() => {
+      const token = store.token();
+      return token ? jwtService.getTokenExpirationDate(token) : null;
+    })
+  })),
+  withMethods((store, authService = inject(AuthService)) => ({
+    login: rxMethod<{ email: string; password: string }>(pipe(
+      tap(() => patchState(store, { loading: true, error: null })),
+      switchMap(credentials => authService.login(credentials).pipe(
+        tapResponse(
+          response => patchState(store, {
+            token: response.token,
+            refreshToken: response.refreshToken,
+            user: response.user,
+            loading: false
+          }),
+          error => patchState(store, { 
+            error: error.message, 
+            loading: false 
+          })
+        )
+      ))
+    )),
+    logout: () => {
+      authService.logout();
+      patchState(store, initialState);
+    },
+    setTokens: (token: string, refreshToken: string) => {
+      patchState(store, { token, refreshToken });
+    }
+  }))
+);
+```
+
+Implementación family.store.ts:
+```typescript
+export const FamilyStore = signalStore(
+  { providedIn: 'root' },
+  withState({
+    members: [] as FamilyMember[],
+    loading: false,
+    error: null as string | null
+  }),
+  withComputed(store => ({
+    activeMembers: computed(() => store.members().filter(m => m.active)),
+    memberById: computed(() => (id: string) => 
+      store.members().find(m => m.id === id)
+    ),
+    memberNameById: computed(() => (id: string) => 
+      store.members().find(m => m.id === id)?.fullName || id
+    )
+  })),
+  withMethods((store, api = inject(FamilyApiService)) => ({
+    loadMembers: rxMethod<void>(pipe(
+      tap(() => patchState(store, { loading: true })),
+      switchMap(() => api.list().pipe(
+        tapResponse(
+          members => patchState(store, { members, loading: false }),
+          error => patchState(store, { error: error.message, loading: false })
+        )
+      ))
+    )),
+    addMember: rxMethod<Partial<FamilyMember>>(pipe(
+      switchMap(member => api.create(member).pipe(
+        tapResponse(
+          newMember => patchState(store, { 
+            members: [newMember, ...store.members()] 
+          }),
+          error => patchState(store, { error: error.message })
+        )
+      ))
+    ))
+  }))
+);
+```
+
+Acciones:
+[ ] Instalar @ngrx/signals
+[ ] Crear AuthStore con manejo de JWT
+[ ] Crear FamilyStore (datos compartidos entre componentes)
+[ ] Crear UIStore (tema, idioma, loading global)
+[ ] Crear ChoresStore
+[ ] Crear EventsStore
+[ ] Crear RecipesStore
+[ ] Refactorizar componentes para usar stores
+[ ] Actualizar AuthGuard para usar AuthStore
+[ ] Crear tests para stores
+
+--------------------------------------------------
+
+TAREA 3.2: Implementar Hidratación de Estado
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+
+Descripción:
+Persistir y restaurar estado crítico en localStorage/sessionStorage.
+
+```typescript
+// src/app/store/hydration.ts
+import { effect } from '@angular/core';
+
+export function withHydration<T>(key: string) {
+  return (store: any) => {
+    // Restaurar estado al iniciar
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        patchState(store, state);
+      } catch {}
+    }
+    
+    // Persistir cambios
+    effect(() => {
+      const currentState = {
+        // Solo persistir datos seguros (no tokens)
+        theme: store.theme?.(),
+        language: store.language?.()
+      };
+      localStorage.setItem(key, JSON.stringify(currentState));
+    });
+  };
+}
+```
+
+
+================================================================================
+                     FASE 4: MODERNIZACIÓN ANGULAR 21
+                        Duración Estimada: 3-4 días
+================================================================================
+
+TAREA 4.1: Migrar a Signal Inputs/Outputs
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1.5 días
+
+Descripción:
+Convertir @Input()/@Output() decorators a las funciones input()/output()
+para aprovechar el sistema de signals de Angular.
+
+Archivos afectados (todos los componentes con @Input/@Output):
+- src/app/chores/chore-card/chore-card.component.ts
+- src/app/events/event-card/event-card.component.ts
+- src/app/recipes/recipe-card/recipe-card.component.ts
+- src/app/shared/components/loading-button/loading-button.component.ts
+- src/app/shared/components/password-field/password-field.component.ts
+- Y otros...
+
+Ejemplo de migración:
+```typescript
+// Antes
+@Component({...})
+export class ChoreCardComponent {
+  @Input() chore!: Chore;
+  @Input() showActions = true;
+  @Output() edit = new EventEmitter<Chore>();
+  @Output() delete = new EventEmitter<Chore>();
+}
+
+// Después
+@Component({...})
+export class ChoreCardComponent {
+  chore = input.required<Chore>();
+  showActions = input<boolean>(true);
+  edit = output<Chore>();
+  delete = output<Chore>();
+}
+```
+
+Acciones:
+[ ] Migrar ChoreCardComponent
+[ ] Migrar EventCardComponent
+[ ] Migrar RecipeCardComponent
+[ ] Migrar LoadingButtonComponent
+[ ] Migrar PasswordFieldComponent
+[ ] Migrar SkipLinkComponent
+[ ] Migrar ConfirmDialogComponent
+[ ] Migrar FileUploadComponent (nuevo)
+[ ] Actualizar tests afectados
+
+--------------------------------------------------
+
+TAREA 4.2: Migrar a Control Flow Syntax
+--------------------------------------------------
+Prioridad: BAJA
+Esfuerzo: 1 día
+
+Descripción:
+Reemplazar *ngIf/*ngFor con la nueva sintaxis @if/@for.
+
+Ejemplo:
+```html
+<!-- Antes -->
+<div *ngIf="items$ | async as items">
+  <app-card *ngFor="let item of items" [item]="item"></app-card>
+</div>
+
+<!-- Después -->
+@if (items$ | async; as items) {
+  @for (item of items; track item.id) {
+    <app-card [item]="item" />
+  }
+}
+```
+
+Comando de migración automática:
+```bash
+ng generate @angular/core:control-flow
+```
+
+Acciones:
+[ ] Ejecutar migración automática
+[ ] Revisar y corregir casos especiales
+[ ] Actualizar snapshots de tests
+
+--------------------------------------------------
+
+TAREA 4.3: Migrar a Functional Guards
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+
+Descripción:
+Convertir guards basados en clases a funciones.
+
+```typescript
+// Antes - src/app/core/guards/auth.guard.ts
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private tokenStorage: TokenStorageService, private router: Router) {}
+  
+  canActivate(): boolean {
+    // ...
+  }
+}
+
+// Después
+export const authGuard: CanActivateFn = () => {
+  const authStore = inject(AuthStore);
+  const router = inject(Router);
+  
+  if (authStore.isAuthenticated()) {
+    return true;
+  }
+  
+  return router.createUrlTree(['/auth/login']);
+};
+```
+
+Actualizar app.routes.ts:
+```typescript
+// Antes
+canActivate: [AuthGuard]
+
+// Después
+canActivate: [authGuard]
+```
+
+Acciones:
+[ ] Crear authGuard funcional
+[ ] Actualizar app.routes.ts
+[ ] Eliminar clase AuthGuard
+[ ] Actualizar tests
+
+--------------------------------------------------
+
+TAREA 4.4: Agregar ChangeDetectionStrategy.OnPush
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+
+Descripción:
+Mejorar rendimiento usando OnPush en componentes que usan async pipe o signals.
+
+```typescript
+@Component({
+  selector: 'app-chores-list',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,  // Agregar
+  // ...
+})
+```
+
+Componentes candidatos (todos los que usan async pipe):
+- ChoresListComponent
+- EventsListComponent
+- RecipesListComponent
+- FamilyListComponent
+- DashboardComponent
+- AddCatalogsComponent
+- Todos los componentes de card
+
+Acciones:
+[ ] Agregar OnPush a todos los componentes de lista
+[ ] Agregar OnPush a todos los componentes de card
+[ ] Agregar OnPush al DashboardComponent
+[ ] Verificar que no haya problemas de detección de cambios
+
+
+================================================================================
+                      FASE 5: i18n Y THEMING
+                        Duración Estimada: 2-3 días
+================================================================================
+
+TAREA 5.1: Estandarizar Uso de i18n
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1 día
+
+Descripción:
+Actualmente se usan 3 enfoques diferentes para traducciones:
+1. Pipe: {{ 'key' | translate }}
+2. Directive: i18nText="key"
+3. Service: this.i18n.translate('key')
+
+Recomendación: Estandarizar en el PIPE (más idiomático en Angular).
+
+Acciones:
+[ ] Documentar estándar: usar SIEMPRE el pipe translate
+[ ] Buscar y reemplazar todos los usos de i18nText directive
+    - Archivo: internal-layout.component.html (múltiples usos)
+    - Archivo: event-dialog.component.html (múltiples usos)
+    - Otros archivos...
+[ ] Buscar y reemplazar textos hardcoded en español/inglés
+[ ] Eliminar traducciones fallback inline del I18nService
+[ ] Agregar claves faltantes a es.json y en.json
+
+Ejemplo de reemplazo:
+```html
+<!-- Antes -->
+<span i18nText="layout.familySection"></span>
+
+<!-- Después -->
+<span>{{ 'layout.familySection' | translate }}</span>
+```
+
+--------------------------------------------------
+
+TAREA 5.2: Internacionalizar SkipLinkComponent
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 horas
+
+Archivo: src/app/shared/components/skip-link/skip-link.component.ts
+
+```typescript
+// Antes
+<a class="skip-link" href="#main-content">
+  Saltar al contenido principal
+</a>
+
+// Después
+<a class="skip-link" href="#main-content">
+  {{ 'accessibility.skipToContent' | translate }}
+</a>
+```
+
+Claves a agregar:
+```json
+{
+  "accessibility": {
+    "skipToContent": "Saltar al contenido principal"
+  }
+}
+```
+
+--------------------------------------------------
+
+TAREA 5.3: Consolidar Variables de Tema
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 1 día
+
+Descripción:
+Las variables de tema están definidas en múltiples archivos con nombres
+inconsistentes.
+
+Acciones:
+[ ] Crear archivo único: src/styles/_design-tokens.scss
+[ ] Migrar todas las variables a este archivo
+[ ] Actualizar imports en styles.scss
+[ ] Eliminar variables duplicadas de themes.scss
+
+Estructura propuesta para _design-tokens.scss:
+```scss
+// =============================================================================
+// DESIGN TOKENS - Fuente única de verdad para el sistema de diseño
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// COLORES BASE
+// -----------------------------------------------------------------------------
+:root {
+  // Colores primarios
+  --color-primary: #2563eb;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-contrast: #ffffff;
+  
+  // Colores de acento
+  --color-accent: #f59e0b;
+  --color-accent-light: #fbbf24;
+  --color-accent-dark: #d97706;
+  
+  // Estados
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  
+  // Superficies (modo claro)
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-surface-border: #e2e8f0;
+  
+  // Texto
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-disabled: #cbd5e1;
+  
+  // Espaciado
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  // Bordes
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+  
+  // Sombras
+  --elevation-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --elevation-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --elevation-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  // Tipografía
+  --font-family: 'Inter', system-ui, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+}
+
+// -----------------------------------------------------------------------------
+// TEMA OSCURO
+// -----------------------------------------------------------------------------
+[data-theme="dark"],
+.dark-theme {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-elevated: #334155;
+  --color-surface-border: #475569;
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-disabled: #64748b;
+  
+  --elevation-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elevation-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --elevation-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+```
+
+--------------------------------------------------
+
+TAREA 5.4: Reemplazar Colores Hardcoded
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+
+Descripción:
+Varios archivos SCSS tienen colores hardcoded en lugar de usar variables CSS.
+
+Archivos afectados:
+- src/app/shared/components/password-strength/password-strength.component.scss
+- src/app/catalogs/add-catalogs/add-catalogs.component.scss
+- Otros...
+
+Ejemplo de corrección:
+```scss
+// Antes
+border-left-color: #2563eb !important;
+color: #1d4ed8 !important;
+
+// Después
+border-left-color: var(--color-primary) !important;
+color: var(--color-primary-dark) !important;
+```
+
+Acciones:
+[ ] Buscar colores hex hardcoded en todos los archivos .scss
+[ ] Reemplazar con variables CSS correspondientes
+[ ] Verificar que los temas claro/oscuro funcionen correctamente
+
+
+================================================================================
+                         FASE 6: ACCESIBILIDAD
+                        Duración Estimada: 1-2 días
+================================================================================
+
+TAREA 6.1: Agregar Landmark main-content
+--------------------------------------------------
+Prioridad: ALTA
+Esfuerzo: 0.5 horas
+
+Archivos:
+- src/app/layout/internal-layout/internal-layout.component.html
+- src/app/layout/auth-layout/auth-layout.component.html
+
+```html
+<!-- Agregar id="main-content" al contenedor principal -->
+<main id="main-content" class="layout-main" role="main">
+  <router-outlet></router-outlet>
+</main>
+```
+
+--------------------------------------------------
+
+TAREA 6.2: Mejorar Navegación por Teclado en Tablas
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 0.5 días
+
+Archivo: src/app/catalogs/add-catalogs/add-catalogs.component.html
+
+```html
+<!-- Agregar interactividad de teclado a filas -->
+<tr *ngFor="let row of dataSource.data" 
+    class="catalog-row"
+    tabindex="0"
+    (keydown.enter)="openEdit(row)"
+    role="row">
+```
+
+--------------------------------------------------
+
+TAREA 6.3: Agregar Estados de Loading Skeleton
+--------------------------------------------------
+Prioridad: BAJA
+Esfuerzo: 0.5 días
+
+Crear componente SkeletonLoaderComponent:
+```typescript
+@Component({
+  selector: 'app-skeleton-loader',
+  template: `
+    <div class="skeleton-container" [ngClass]="type()">
+      @for (item of items(); track $index) {
+        <div class="skeleton-item" [style.height.px]="height()"></div>
+      }
+    </div>
+  `
+})
+export class SkeletonLoaderComponent {
+  type = input<'card' | 'list' | 'text'>('card');
+  count = input<number>(3);
+  height = input<number>(100);
+  
+  items = computed(() => Array(this.count()).fill(0));
+}
+```
+
+
+================================================================================
+                          FASE 7: TESTING
+                        Duración Estimada: 5-7 días
+================================================================================
+
+TAREA 7.1: Tests Unitarios para Servicios
+--------------------------------------------------
+Prioridad: ALTA
+Esfuerzo: 2 días
+
+Servicios sin tests adecuados:
+- FamilyService
+- ChoresService
+- RecipesService
+- I18nService
+- ThemeService
+
+Ejemplo de test completo:
+```typescript
+// chores.service.spec.ts
+describe('ChoresService', () => {
+  let service: ChoresService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ChoresService);
+  });
+
+  describe('list', () => {
+    it('should return observable of chores', (done) => {
+      service.list().subscribe(chores => {
+        expect(chores).toBeInstanceOf(Array);
+        expect(chores.length).toBeGreaterThan(0);
+        done();
+      });
+    });
+  });
+
+  describe('create', () => {
+    it('should add new chore to list', (done) => {
+      const newChore = { name: 'Test Chore', frequency: 'daily' as const };
+      
+      service.create(newChore).subscribe(created => {
+        expect(created.id).toBeDefined();
+        expect(created.name).toBe('Test Chore');
+        
+        service.list().subscribe(list => {
+          expect(list.find(c => c.id === created.id)).toBeDefined();
+          done();
+        });
+      });
+    });
+  });
+
+  describe('update', () => {
+    it('should update existing chore', (done) => {
+      service.list().pipe(take(1)).subscribe(list => {
+        const chore = list[0];
+        const newName = 'Updated Name';
+        
+        service.update(chore.id, { name: newName }).subscribe(updated => {
+          expect(updated?.name).toBe(newName);
+          done();
+        });
+      });
+    });
+
+    it('should return undefined for non-existent id', (done) => {
+      service.update('non-existent', { name: 'Test' }).subscribe(result => {
+        expect(result).toBeUndefined();
+        done();
+      });
+    });
+  });
+
+  describe('delete', () => {
+    it('should remove chore from list', (done) => {
+      service.list().pipe(take(1)).subscribe(list => {
+        const chore = list[0];
+        const initialLength = list.length;
+        
+        service.delete(chore.id).subscribe(result => {
+          expect(result).toBe(true);
+          
+          service.list().pipe(take(1)).subscribe(newList => {
+            expect(newList.length).toBe(initialLength - 1);
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('toggleCompleted', () => {
+    it('should toggle completed status', (done) => {
+      service.list().pipe(take(1)).subscribe(list => {
+        const chore = list[0];
+        const initialStatus = chore.completed;
+        
+        service.toggleCompleted(chore.id).subscribe(updated => {
+          expect(updated?.completed).toBe(!initialStatus);
+          done();
+        });
+      });
+    });
+  });
+});
+```
+
+--------------------------------------------------
+
+TAREA 7.2: Tests de Componentes
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 2 días
+
+Componentes prioritarios para testing:
+- LoginComponent
+- RegisterComponent
+- ChoreCardComponent
+- ChoresListComponent
+- ChoreDialogComponent
+
+--------------------------------------------------
+
+TAREA 7.3: Tests E2E con Playwright
+--------------------------------------------------
+Prioridad: MEDIA
+Esfuerzo: 2 días
+
+Instalar Playwright:
+```bash
+npm install -D @playwright/test
+npx playwright install
+```
+
+Estructura:
+```
+e2e/
+├── playwright.config.ts
+├── auth/
+│   ├── login.spec.ts
+│   └── register.spec.ts
+├── chores/
+│   ├── chores-list.spec.ts
+│   └── chore-crud.spec.ts
+└── fixtures/
+    └── test-data.ts
+```
+
+
+================================================================================
+                     CRONOGRAMA DE IMPLEMENTACIÓN
+================================================================================
+
+SEMANA 1: SEGURIDAD + ARQUITECTURA BASE
+----------------------------------------
+Día 1-2: Tareas 1.1, 1.2, 1.3 (Seguridad crítica)
+Día 3-4: Tarea 2.1 (BaseCrudService)
+Día 5: Tarea 2.2 (BaseDialogComponent)
+
+SEMANA 2: ARQUITECTURA + COMPONENTES REUTILIZABLES
+--------------------------------------------------
+Día 1: Tarea 2.3 (FamilyResolverService)
+Día 2-3: Tarea 2.4 (FileUploadComponent)
+Día 4-5: Tarea 3.1 (NgRx Signals - inicio)
+
+SEMANA 3: NgRx + MODERNIZACIÓN
+------------------------------
+Día 1-2: Tarea 3.1 (NgRx Signals - completar)
+Día 3: Tarea 4.1 (Signal inputs/outputs)
+Día 4: Tarea 4.2 (Control flow syntax)
+Día 5: Tarea 4.3, 4.4 (Guards, OnPush)
+
+SEMANA 4: i18n + THEMING + ACCESIBILIDAD
+----------------------------------------
+Día 1-2: Tareas 5.1, 5.2, 5.3 (i18n)
+Día 3: Tarea 5.4 (Colores hardcoded)
+Día 4: Tareas 6.1, 6.2, 6.3 (Accesibilidad)
+Día 5: Buffer / Revisión
+
+SEMANA 5: TESTING
+-----------------
+Día 1-2: Tarea 7.1 (Tests unitarios servicios)
+Día 3-4: Tarea 7.2 (Tests componentes)
+Día 5: Tarea 7.3 (E2E setup básico)
+
+
+================================================================================
+                           MÉTRICAS DE ÉXITO
+================================================================================
+
+1. SEGURIDAD
+   - [ ] Cero vulnerabilidades críticas
+   - [ ] JWT con validación de expiración
+   - [ ] Sin componentes de desarrollo en producción
+
+2. CÓDIGO
+   - [ ] Reducción del 40% en líneas duplicadas
+   - [ ] Todos los servicios extendiendo BaseCrudService
+   - [ ] Todos los diálogos extendiendo BaseDialogComponent
+
+3. RENDIMIENTO
+   - [ ] Todos los componentes con OnPush
+   - [ ] Lazy loading en todas las rutas
+   - [ ] Bundle size < 500KB initial
+
+4. TESTING
+   - [ ] Cobertura de servicios > 80%
+   - [ ] Cobertura de componentes > 60%
+   - [ ] Tests E2E para flujos críticos
+
+5. ACCESIBILIDAD
+   - [ ] Score WAVE: 0 errores
+   - [ ] Navegación completa por teclado
+   - [ ] Skip link funcional
+
+6. CALIDAD
+   - [ ] 0 warnings en ng build
+   - [ ] Lint clean
+   - [ ] i18n 100% consistente
+
+
+================================================================================
+                              NOTAS FINALES
+================================================================================
+
+PRIORIZACIÓN RECOMENDADA:
+1. CRÍTICO: Fase 1 (Seguridad) - Implementar inmediatamente
+2. ALTO: Fase 2 (Arquitectura) - Siguiente sprint
+3. MEDIO: Fases 3-5 (NgRx, Angular 21, i18n) - Sprints siguientes
+4. BAJO: Fases 6-7 (Accesibilidad, Testing) - Mejora continua
+
+CONSIDERACIONES:
+- Hacer commits atómicos por tarea
+- Crear PRs por fase para revisión de código
+- Actualizar documentación conforme se implementa
+- Mantener backwards compatibility donde sea posible
+- Ejecutar ng build después de cada cambio significativo
+
+RECURSOS ADICIONALES:
+- Angular 21 Docs: https://angular.dev
+- NgRx Signals: https://ngrx.io/guide/signals
+- WCAG Guidelines: https://www.w3.org/WAI/WCAG21/quickref/
+
+================================================================================
+                         FIN DEL DOCUMENTO
+================================================================================
