@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,9 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { FamilyMemberNamePipe } from '../../shared/pipes/family-member-name.pipe';
 import { Chore } from '../models/chore.model';
-import { FamilyService } from '../../family/family.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chore-card',
@@ -20,52 +19,34 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     MatSlideToggleModule,
     MatChipsModule,
-    TranslatePipe
+    TranslatePipe,
+    FamilyMemberNamePipe
   ],
   templateUrl: './chore-card.component.html',
-  styleUrls: ['./chore-card.component.scss']
+  styleUrls: ['./chore-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChoreCardComponent implements OnDestroy {
-  @Input() chore!: Chore;
-  @Input() showActions = true;
+export class ChoreCardComponent {
+  /** The chore to display */
+  chore = input.required<Chore>();
 
-  @Output() view = new EventEmitter<Chore>();
-  @Output() edit = new EventEmitter<Chore>();
-  @Output() delete = new EventEmitter<Chore>();
-  @Output() toggleCompleted = new EventEmitter<Chore>();
+  /** Whether to show action buttons */
+  showActions = input<boolean>(true);
 
-  responsibleName = '';
-  private familySub?: Subscription;
-  private familyMap: Record<string, string> = {};
+  /** Emits when view is requested */
+  view = output<Chore>();
 
-  constructor(private familyService: FamilyService) {
-    this.familySub = this.familyService.list().subscribe(members => {
-      this.familyMap = members.reduce((acc, m) => {
-        acc[m.id] = m.fullName;
-        return acc;
-      }, {} as Record<string, string>);
-      this.updateResponsibleName();
-    });
-  }
+  /** Emits when edit is requested */
+  edit = output<Chore>();
 
-  ngOnChanges() {
-    this.updateResponsibleName();
-  }
+  /** Emits when delete is requested */
+  delete = output<Chore>();
 
-  ngOnDestroy() {
-    this.familySub?.unsubscribe();
-  }
-
-  private updateResponsibleName() {
-    if (this.chore?.responsibleId) {
-      this.responsibleName = this.familyMap[this.chore.responsibleId] || this.chore.responsibleId;
-    } else {
-      this.responsibleName = '';
-    }
-  }
+  /** Emits when toggle completed is requested */
+  toggleCompleted = output<Chore>();
 
   getFrequencyKey(): string {
-    switch (this.chore.frequency) {
+    switch (this.chore().frequency) {
       case 'daily': return 'chores.daily';
       case 'twice-weekly': return 'chores.twiceWeekly';
       case 'weekly': return 'chores.weekly';
@@ -73,19 +54,19 @@ export class ChoreCardComponent implements OnDestroy {
     }
   }
 
-  onToggle(checked: boolean) {
-    this.toggleCompleted.emit(this.chore);
+  onToggle(checked: boolean): void {
+    this.toggleCompleted.emit(this.chore());
   }
 
-  onView() {
-    this.view.emit(this.chore);
+  onView(): void {
+    this.view.emit(this.chore());
   }
 
-  onEdit() {
-    this.edit.emit(this.chore);
+  onEdit(): void {
+    this.edit.emit(this.chore());
   }
 
-  onDelete() {
-    this.delete.emit(this.chore);
+  onDelete(): void {
+    this.delete.emit(this.chore());
   }
 }

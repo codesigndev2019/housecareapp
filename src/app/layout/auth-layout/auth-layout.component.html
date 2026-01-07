@@ -1,6 +1,6 @@
 <div class="auth-layout">
   <mat-toolbar class="auth-header">
-    <span class="header-title" i18nText="layout.appTitle"></span>
+    <span class="header-title">{{ 'layout.appTitle' | translate }}</span>
     <span class="spacer"></span>
     
     <button mat-icon-button (click)="toggleTheme()" class="theme-toggle" [attr.aria-label]="'aria.toggleTheme' | translate">
@@ -14,18 +14,22 @@
     <mat-menu #langMenu="matMenu" panelClass="lang-menu">
       <button mat-menu-item (click)="setLanguage('es')" [class.selected]="currentLanguage() === 'es'">
         <span class="flag-svg" [innerHTML]="getFlagSvg('es')"></span>
-        <span i18nText="tools.spanish"></span>
-        <mat-icon *ngIf="currentLanguage() === 'es'" class="menu-check">check</mat-icon>
+        <span>{{ 'tools.spanish' | translate }}</span>
+        @if (currentLanguage() === 'es') {
+          <mat-icon class="menu-check">check</mat-icon>
+        }
       </button>
       <button mat-menu-item (click)="setLanguage('en')" [class.selected]="currentLanguage() === 'en'">
         <span class="flag-svg" [innerHTML]="getFlagSvg('en')"></span>
-        <span i18nText="tools.english"></span>
-        <mat-icon *ngIf="currentLanguage() === 'en'" class="menu-check">check</mat-icon>
+        <span>{{ 'tools.english' | translate }}</span>
+        @if (currentLanguage() === 'en') {
+          <mat-icon class="menu-check">check</mat-icon>
+        }
       </button>
     </mat-menu>
   </mat-toolbar>
 
-  <main class="auth-main">
+  <main id="main-content" class="auth-main" role="main" [attr.aria-label]="'accessibility.mainContent' | translate">
     <router-outlet></router-outlet>
   </main>
 </div>

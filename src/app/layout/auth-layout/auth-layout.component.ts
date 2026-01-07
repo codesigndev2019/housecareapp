@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,7 +9,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { ThemeService } from '../../core/services/theme.service';
-import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { FLAGS } from '../../shared/constants/flags';
 
@@ -24,11 +23,11 @@ import { FLAGS } from '../../shared/constants/flags';
     MatMenuModule,
     MatIconModule,
     MatDividerModule,
-    I18nTextDirective,
     TranslatePipe
   ],
   templateUrl: './auth-layout.component.html',
-  styleUrl: './auth-layout.component.scss'
+  styleUrl: './auth-layout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthLayoutComponent implements OnInit {
   private i18n = inject(I18nService);

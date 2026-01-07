@@ -1,12 +1,12 @@
-<mat-card class="chore-card" [class.completed]="chore.completed">
-  <div class="card-accent" [class.done]="chore.completed"></div>
+<mat-card class="chore-card" [class.completed]="chore().completed">
+  <div class="card-accent" [class.done]="chore().completed"></div>
   
   <div class="card-header">
     <div class="chore-icon">
-      <mat-icon>{{ chore.completed ? 'check_circle' : 'assignment' }}</mat-icon>
+      <mat-icon>{{ chore().completed ? 'check_circle' : 'assignment' }}</mat-icon>
     </div>
     <div class="chore-info">
-      <h3 class="chore-title">{{ chore.name }}</h3>
+      <h3 class="chore-title">{{ chore().name }}</h3>
       <div class="chore-meta">
         <span class="frequency-badge">{{ getFrequencyKey() | translate }}</span>
       </div>
@@ -14,38 +14,43 @@
   </div>
 
   <mat-card-content>
-    <div class="detail-row" *ngIf="responsibleName">
-      <mat-icon>person</mat-icon>
-      <span>{{ responsibleName }}</span>
-    </div>
-    <div class="detail-row" *ngIf="!responsibleName">
-      <mat-icon>person_off</mat-icon>
-      <span>{{ 'chores.noResponsible' | translate }}</span>
-    </div>
+    @if (chore().responsibleId) {
+      <div class="detail-row">
+        <mat-icon>person</mat-icon>
+        <span>{{ chore().responsibleId | familyMemberName }}</span>
+      </div>
+    } @else {
+      <div class="detail-row">
+        <mat-icon>person_off</mat-icon>
+        <span>{{ 'chores.noResponsible' | translate }}</span>
+      </div>
+    }
 
     <div class="status-toggle">
       <mat-slide-toggle
-        [checked]="chore.completed"
+        [checked]="chore().completed"
         (change)="onToggle($event.checked)"
         color="primary"
         labelPosition="before">
         <div class="toggle-label">
-          <mat-icon>{{ chore.completed ? 'done_all' : 'pending_actions' }}</mat-icon>
-          <span>{{ chore.completed ? ('chores.done' | translate) : ('chores.pending' | translate) }}</span>
+          <mat-icon>{{ chore().completed ? 'done_all' : 'pending_actions' }}</mat-icon>
+          <span>{{ chore().completed ? ('chores.done' | translate) : ('chores.pending' | translate) }}</span>
         </div>
       </mat-slide-toggle>
     </div>
   </mat-card-content>
 
-  <mat-card-actions align="end" *ngIf="showActions">
-    <button mat-icon-button (click)="onView()" [attr.aria-label]="'actions.view' | translate" class="action-btn">
-      <mat-icon>visibility</mat-icon>
-    </button>
-    <button mat-icon-button (click)="onEdit()" [attr.aria-label]="'actions.edit' | translate" class="action-btn">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-icon-button (click)="onDelete()" [attr.aria-label]="'actions.delete' | translate" class="action-btn delete-btn">
-      <mat-icon>delete_outline</mat-icon>
-    </button>
-  </mat-card-actions>
+  @if (showActions()) {
+    <mat-card-actions align="end">
+      <button mat-icon-button (click)="onView()" [attr.aria-label]="'actions.view' | translate" class="action-btn">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onEdit()" [attr.aria-label]="'actions.edit' | translate" class="action-btn">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onDelete()" [attr.aria-label]="'actions.delete' | translate" class="action-btn delete-btn">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </mat-card-actions>
+  }
 </mat-card>

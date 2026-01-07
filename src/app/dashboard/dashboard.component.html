@@ -4,55 +4,123 @@
     <p class="subtitle">{{ 'dashboard.subtitle' | translate }}</p>
   </div>
 
+  <!-- Budget Summary Section -->
+  <section class="budget-section">
+    <h3>{{ 'dashboard.budgetSection' | translate }}</h3>
+    
+    @if (budgetSummary$ | async; as summary) {
+      <div class="budget-content">
+        <!-- Summary Cards -->
+        <div class="budget-cards">
+          <div class="budget-card income">
+            <div class="card-icon">
+              <mat-icon>trending_up</mat-icon>
+            </div>
+            <div class="card-info">
+              <span class="card-label">{{ 'budget.totalIncome' | translate }}</span>
+              <span class="card-value">{{ getCurrencySymbol() }} {{ summary.totalIncome | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="budget-card expense">
+            <div class="card-icon">
+              <mat-icon>trending_down</mat-icon>
+            </div>
+            <div class="card-info">
+              <span class="card-label">{{ 'budget.totalExpenses' | translate }}</span>
+              <span class="card-value">{{ getCurrencySymbol() }} {{ summary.totalExpenses | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="budget-card balance" [class.positive]="summary.balance >= 0" [class.negative]="summary.balance < 0">
+            <div class="card-icon">
+              <mat-icon>{{ summary.balance >= 0 ? 'account_balance_wallet' : 'warning' }}</mat-icon>
+            </div>
+            <div class="card-info">
+              <span class="card-label">{{ 'budget.balance' | translate }}</span>
+              <span class="card-value">{{ getCurrencySymbol() }} {{ summary.balance | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="budget-charts">
+          <div class="chart-container doughnut-chart">
+            <h4>{{ 'dashboard.budgetDistribution' | translate }}</h4>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                [type]="chartType"
+                [data]="chartData"
+                [options]="chartOptions">
+              </canvas>
+            </div>
+          </div>
+
+          <div class="chart-container bar-chart">
+            <h4>{{ 'dashboard.budgetComparison' | translate }}</h4>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                [type]="barChartType"
+                [data]="barChartData"
+                [options]="barChartOptions">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
   <div class="sections">
     <section class="section">
       <h3>{{ 'dashboard.eventsSection' | translate }}</h3>
       <div class="grid">
-        <ng-container *ngIf="events$ | async as events">
-          <ng-container *ngIf="events.length; else noEvents">
-            <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
-          </ng-container>
-          <ng-template #noEvents>
+        @if (events$ | async; as events) {
+          @if (events.length) {
+            @for (ev of events; track ev.id) {
+              <app-event-card [event]="ev"></app-event-card>
+            }
+          } @else {
             <div class="empty">{{ 'dashboard.noEvents' | translate }}</div>
-          </ng-template>
-        </ng-container>
+          }
+        }
       </div>
     </section>
 
     <section class="section">
       <h3>{{ 'dashboard.choresSection' | translate }}</h3>
       <div class="grid">
-        <ng-container *ngIf="chores$ | async as chores">
-          <ng-container *ngIf="chores.length; else noChores">
-            <app-chore-card 
-              *ngFor="let chore of chores" 
-              [chore]="chore"
-              [showActions]="false"
-              (toggleCompleted)="onToggleChore($event)">
-            </app-chore-card>
-          </ng-container>
-          <ng-template #noChores>
+        @if (chores$ | async; as chores) {
+          @if (chores.length) {
+            @for (chore of chores; track chore.id) {
+              <app-chore-card 
+                [chore]="chore"
+                [showActions]="false"
+                (toggleCompleted)="onToggleChore($event)">
+              </app-chore-card>
+            }
+          } @else {
             <div class="empty">{{ 'dashboard.noChores' | translate }}</div>
-          </ng-template>
-        </ng-container>
+          }
+        }
       </div>
     </section>
 
     <section class="section">
       <h3>{{ 'dashboard.recipesSection' | translate }}</h3>
       <div class="grid">
-        <ng-container *ngIf="recipes$ | async as recs">
-          <ng-container *ngIf="recs.length; else noRecipes">
-            <app-recipe-card 
-              *ngFor="let r of recs" 
-              [recipe]="r" 
-              [showActions]="false">
-            </app-recipe-card>
-          </ng-container>
-          <ng-template #noRecipes>
+        @if (recipes$ | async; as recs) {
+          @if (recs.length) {
+            @for (r of recs; track r.id) {
+              <app-recipe-card 
+                [recipe]="r" 
+                [showActions]="false">
+              </app-recipe-card>
+            }
+          } @else {
             <div class="empty">{{ 'dashboard.noRecipes' | translate }}</div>
-          </ng-template>
-        </ng-container>
+          }
+        }
       </div>
     </section>
   </div>

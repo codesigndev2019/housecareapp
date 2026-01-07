@@ -1,0 +1,151 @@
+<!-- File Upload Component Template -->
+<div class="file-upload-container">
+  <!-- Drop Zone -->
+  <div
+    class="drop-zone"
+    [class.drag-over]="dragOver()"
+    [class.disabled]="!canAddMore()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="canAddMore() && fileInput.click()"
+    (keydown)="onKeyDown($event, fileInput)"
+    tabindex="0"
+    role="button"
+    [attr.aria-label]="'upload.dropZone' | translate"
+    [attr.aria-disabled]="!canAddMore()">
+    
+    <mat-icon class="upload-icon">cloud_upload</mat-icon>
+    
+    <div class="drop-zone-text">
+      @if (canAddMore()) {
+        <p class="primary-text">{{ 'upload.dragAndDrop' | translate }}</p>
+        <p class="secondary-text">{{ 'upload.orClickToBrowse' | translate }}</p>
+      } @else {
+        <p class="primary-text">{{ 'upload.maxFilesReached' | translate }}</p>
+      }
+    </div>
+
+    <div class="constraints">
+      <span class="constraint">{{ 'upload.maxSize' | translate }}: {{ maxSizeMb() }}MB</span>
+      <span class="constraint">{{ 'upload.maxFiles' | translate }}: {{ maxFiles() }}</span>
+      <span class="constraint">{{ 'upload.remaining' | translate }}: {{ remainingSlots() }}</span>
+    </div>
+  </div>
+
+  <!-- Hidden File Input -->
+  <input
+    #fileInput
+    type="file"
+    class="hidden-input"
+    [accept]="acceptTypes()"
+    [multiple]="multiple()"
+    (change)="onFilesSelected($event)"
+    aria-hidden="true">
+
+  <!-- Loading Indicator -->
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Loading files"></mat-progress-bar>
+  }
+
+  <!-- Validation Errors -->
+  @if (errors().length > 0) {
+    <div class="errors" role="alert" aria-live="polite">
+      @for (error of errors(); track error) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error | translate }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Existing Files (edit mode) -->
+  @if (existingFiles().length > 0) {
+    <div class="existing-files">
+      <h4 class="section-title">{{ 'upload.existingFiles' | translate }}</h4>
+      <div class="file-grid">
+        @for (url of existingFiles(); track url) {
+          <div class="file-preview existing">
+            <img [src]="url" [alt]="'upload.existingImage' | translate" loading="lazy">
+            <button
+              mat-icon-button
+              class="remove-button"
+              (click)="removeExistingFile(url)"
+              [attr.aria-label]="'upload.removeFile' | translate"
+              type="button">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- New File Previews -->
+  @if (showPreviews() && previews().length > 0) {
+    <div class="new-files">
+      <h4 class="section-title">{{ 'upload.newFiles' | translate }}</h4>
+      <div class="file-grid">
+        @for (preview of previews(); track preview.id) {
+          <div class="file-preview new-file">
+            @if (preview.url) {
+              <img [src]="preview.url" [alt]="preview.name" loading="lazy">
+            } @else {
+              <div class="file-icon">
+                <mat-icon>insert_drive_file</mat-icon>
+              </div>
+            }
+            <div class="file-info">
+              <span class="file-name" [title]="preview.name">{{ preview.name }}</span>
+              <span class="file-size">{{ formatFileSize(preview.size) }}</span>
+            </div>
+            <button
+              mat-icon-button
+              class="remove-button"
+              (click)="removeFile(preview.id)"
+              [attr.aria-label]="'upload.removeFile' | translate"
+              type="button">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- File List (non-image files without preview) -->
+  @if (!showPreviews() && previews().length > 0) {
+    <div class="file-list">
+      @for (preview of previews(); track preview.id) {
+        <div class="file-list-item">
+          <mat-icon>insert_drive_file</mat-icon>
+          <span class="file-name">{{ preview.name }}</span>
+          <span class="file-size">{{ formatFileSize(preview.size) }}</span>
+          <button
+            mat-icon-button
+            class="remove-button"
+            (click)="removeFile(preview.id)"
+            [attr.aria-label]="'upload.removeFile' | translate"
+            type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Clear All Button -->
+  @if (previews().length > 1) {
+    <div class="actions">
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="clearAll()"
+        type="button">
+        <mat-icon>delete_sweep</mat-icon>
+        {{ 'upload.clearAll' | translate }}
+      </button>
+    </div>
+  }
+</div>

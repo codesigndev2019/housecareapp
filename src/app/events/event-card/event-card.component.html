@@ -1,4 +1,4 @@
-<mat-card class="event-card" [class.has-reminder]="event.reminder?.enabled">
+<mat-card class="event-card" [class.has-reminder]="event().reminder?.enabled">
   <div class="card-accent"></div>
   
   <div class="card-header">
@@ -6,36 +6,43 @@
       <mat-icon>event</mat-icon>
     </div>
     <div class="event-info">
-      <h3 class="event-title">{{ event.name }}</h3>
+      <h3 class="event-title">{{ event().name }}</h3>
       <div class="event-datetime">
         <mat-icon>schedule</mat-icon>
-        <span>{{ event.date | date:'mediumDate' }} • {{ event.time }}</span>
+        <span>{{ event().date | date:'mediumDate' }} • {{ event().time }}</span>
       </div>
     </div>
   </div>
 
   <mat-card-content>
-    <div class="detail-row" *ngIf="event.location">
-      <mat-icon>location_on</mat-icon>
-      <span>{{ event.location }}</span>
-    </div>
-    
-    <div class="detail-row" *ngIf="event.participants?.length">
-      <mat-icon>group</mat-icon>
-      <div class="participants">
-        <mat-chip-set aria-label="participants list">
-          <mat-chip *ngFor="let name of participantNames">{{ name }}</mat-chip>
-        </mat-chip-set>
+    @if (event().location) {
+      <div class="detail-row">
+        <mat-icon>location_on</mat-icon>
+        <span>{{ event().location }}</span>
       </div>
-    </div>
-    <div class="detail-row" *ngIf="!event.participants?.length">
-      <mat-icon>group</mat-icon>
-      <span class="no-participants" i18nText="events.noParticipants">Sin participantes</span>
-    </div>
+    }
+    
+    @if (event().participants?.length) {
+      <div class="detail-row">
+        <mat-icon>group</mat-icon>
+        <div class="participants">
+          <mat-chip-set aria-label="participants list">
+            @for (id of event().participants; track id) {
+              <mat-chip>{{ id | familyMemberName }}</mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+      </div>
+    } @else {
+      <div class="detail-row">
+        <mat-icon>group</mat-icon>
+        <span class="no-participants">{{ 'events.noParticipants' | translate }}</span>
+      </div>
+    }
 
     <div class="reminder-toggle">
       <mat-slide-toggle 
-        [checked]="event.reminder?.enabled" 
+        [checked]="event().reminder?.enabled" 
         (change)="toggleReminder($event.checked)" 
         color="primary"
         labelPosition="before">
@@ -46,13 +53,15 @@
       </mat-slide-toggle>
     </div>
 
-    <div *ngIf="event.reminder?.enabled" class="reminder-details">
-      <div class="reminder-info">
-        <mat-icon>alarm</mat-icon>
-        <span>{{ event.reminder?.dateTime | date:'short' }}</span>
-        <span class="frequency-badge">{{ event.reminder?.frequency }}</span>
+    @if (event().reminder?.enabled) {
+      <div class="reminder-details">
+        <div class="reminder-info">
+          <mat-icon>alarm</mat-icon>
+          <span>{{ event().reminder?.dateTime | date:'short' }}</span>
+          <span class="frequency-badge">{{ event().reminder?.frequency }}</span>
+        </div>
       </div>
-    </div>
+    }
   </mat-card-content>
 
   <mat-card-actions align="end">

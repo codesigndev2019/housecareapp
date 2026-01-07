@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -10,18 +10,43 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { FileUploadComponent, FilePreview } from '../../shared/components/file-upload/file-upload.component';
 
 @Component({
   selector: 'app-recipe-edit-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatNativeDateModule, MatIconModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatIconModule,
+    TranslatePipe,
+    FileUploadComponent
+  ],
   templateUrl: './recipe-edit-dialog.component.html',
   styleUrls: ['./recipe-edit-dialog.component.scss']
 })
 export class RecipeEditDialogComponent {
   form: FormGroup;
-
   isEdit = false;
+
+  /** Existing images from the recipe being edited */
+  existingImages = signal<string[]>([]);
+
+  /** New file previews from FileUploadComponent */
+  newFilePreviews = signal<FilePreview[]>([]);
+
+  /** Computed total images count */
+  totalImages = computed(() => this.existingImages().length + this.newFilePreviews().length);
+
+  /** Computed validation - max 2 images */
+  hasImageError = computed(() => this.totalImages() > 2);
 
   constructor(
     private fb: FormBuilder,
@@ -32,93 +57,66 @@ export class RecipeEditDialogComponent {
       name: ['', Validators.required],
       ingredients: [''],
       preparation: [''],
-      images: [[]], // array of data URLs or urls
       scheduleToggle: [false],
       scheduledAt: ['']
     });
 
     if (data?.recipe) {
       this.isEdit = true;
-      const existingImages = data.recipe.images || [];
-      // map recipe fields
+      const existingImgs = data.recipe.images || [];
+      this.existingImages.set(existingImgs);
+
       this.form.patchValue({
         name: data.recipe.name,
         ingredients: data.recipe.ingredients || '',
         preparation: data.recipe.preparation || '',
-        images: existingImages,
         scheduleToggle: !!data.recipe.scheduledAt,
         scheduledAt: data.recipe.scheduledAt || ''
       });
-      // Sync previews with existing images
-      this.previews = [...existingImages];
     }
   }
 
-  imageErrors: string[] = [];
-  previews: string[] = [];
+  /**
+   * Handle files changed from FileUploadComponent
+   */
+  onFilesChanged(previews: FilePreview[]): void {
+    this.newFilePreviews.set(previews);
+  }
 
-  save() {
-    // validate images count
-    this.imageErrors = [];
-    const imgs: string[] = this.form.value.images || [];
-
-    if (imgs.length > 2) {
-      this.imageErrors.push('recipes.imagesTooMany');
+  /**
+   * Handle file removed (could be existing or new)
+   */
+  onFileRemoved(idOrUrl: string): void {
+    // Check if it's an existing image URL
+    const existing = this.existingImages();
+    if (existing.includes(idOrUrl)) {
+      this.existingImages.set(existing.filter(url => url !== idOrUrl));
     }
+  }
 
+  save(): void {
     if (this.form.value.scheduleToggle && !this.form.value.scheduledAt) {
-      // invalid schedule
       this.form.get('scheduledAt')?.setErrors({ required: true });
     }
 
-    if (this.form.valid && this.imageErrors.length === 0) {
-      const payload = { ...this.form.value };
-      // normalize scheduledAt
-      if (!payload.scheduleToggle) payload.scheduledAt = null;
+    if (this.form.valid && !this.hasImageError()) {
+      // Collect all images: existing + new (as data URLs)
+      const allImages = [
+        ...this.existingImages(),
+        ...this.newFilePreviews().map(p => p.url)
+      ];
+
+      const payload = {
+        ...this.form.value,
+        images: allImages,
+        scheduledAt: this.form.value.scheduleToggle ? this.form.value.scheduledAt : null
+      };
+
       this.dialogRef.close(payload);
     }
   }
 
-  close() { this.dialogRef.close(); }
-
-  onFilesSelected(ev: Event) {
-    this.imageErrors = [];
-    const input = ev.target as HTMLInputElement;
-    if (!input.files) return;
-    const files = Array.from(input.files);
-    if (files.length > 2) {
-      this.imageErrors.push('recipes.imagesTooMany');
-      return;
-    }
-
-    const allowed = ['image/png', 'image/jpeg', 'image/jpg'];
-    const readers: Promise<string>[] = [];
-
-    for (const f of files) {
-      if (!allowed.includes(f.type)) {
-        this.imageErrors.push('recipes.imagesInvalidType');
-        continue;
-      }
-      readers.push(new Promise((res, rej) => {
-        const fr = new FileReader();
-        fr.onload = () => res(fr.result as string);
-        fr.onerror = rej;
-        fr.readAsDataURL(f);
-      }));
-    }
-
-    Promise.all(readers).then((dataUrls) => {
-      this.previews = dataUrls;
-      this.form.patchValue({ images: dataUrls });
-    }).catch(() => {
-      this.imageErrors.push('recipes.imagesReadError');
-    });
-  }
-
-  removePreview(i: number) {
-    const arr: string[] = this.form.value.images || [];
-    arr.splice(i, 1);
-    this.previews.splice(i, 1);
-    this.form.patchValue({ images: arr });
+  close(): void {
+    this.dialogRef.close();
   }
 }

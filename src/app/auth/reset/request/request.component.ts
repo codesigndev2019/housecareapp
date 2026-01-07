@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, OnInit, inject, signal, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
-import { I18nTextDirective } from '../../../core/i18n/i18n-text.directive';
 
 @Component({
   selector: 'app-reset-request',
@@ -26,12 +25,12 @@ import { I18nTextDirective } from '../../../core/i18n/i18n-text.directive';
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    TranslatePipe,
-    I18nTextDirective
+    TranslatePipe
   ],
   schemas: [NO_ERRORS_SCHEMA],
   templateUrl: './request.component.html',
-  styleUrls: ['./request.component.scss']
+  styleUrls: ['./request.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetRequestComponent implements OnInit {
   private fb = inject(FormBuilder);

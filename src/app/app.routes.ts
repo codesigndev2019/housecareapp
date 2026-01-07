@@ -1,5 +1,18 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
+import { isDevMode } from '@angular/core';
+
+/**
+ * Development-only routes
+ * These routes are only available in development mode and will be
+ * stripped from production builds
+ */
+const devRoutes: Routes = isDevMode() ? [
+  {
+    path: 'dev-login',
+    loadComponent: () => import('./dev-login/dev-login.component').then(c => c.DevLoginComponent)
+  }
+] : [];
 
 export const routes: Routes = [
   {
@@ -13,11 +26,12 @@ export const routes: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]
   },
-  { path: 'dev-login', loadComponent: () => import('./dev-login/dev-login.component').then(c => c.DevLoginComponent) },
+  // Development routes (conditionally included)
+  ...devRoutes,
   {
     path: 'app',
     loadComponent: () => import('./layout/internal-layout/internal-layout.component').then(c => c.InternalLayoutComponent),
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(c => c.DashboardComponent) },
       { path: 'family', loadComponent: () => import('./family/family-list/family-list.component').then(c => c.FamilyListComponent) },
@@ -25,6 +39,7 @@ export const routes: Routes = [
       { path: 'catalogs', loadComponent: () => import('./catalogs/add-catalogs/add-catalogs.component').then(c => c.AddCatalogsComponent) },
       { path: 'recipes', loadComponent: () => import('./recipes/recipes-list/recipes-list.component').then(c => c.RecipesListComponent) },
       { path: 'events', loadComponent: () => import('./events/events-list/events-list.component').then(c => c.EventsListComponent) },
+      { path: 'budget', loadComponent: () => import('./budget/budget-list/budget-list.component').then(c => c.BudgetListComponent) },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

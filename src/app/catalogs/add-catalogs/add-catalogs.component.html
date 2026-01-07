@@ -27,14 +27,15 @@
         (keyup)="applyFilter($any($event.target).value)" 
         [placeholder]="'catalogs.searchPlaceholder' | translate"
         #searchInput>
-      <button 
-        mat-icon-button 
-        matSuffix 
-        *ngIf="dataSource.filter" 
-        (click)="applyFilter(''); searchInput.value=''" 
-        class="clear-btn">
-        <mat-icon>close</mat-icon>
-      </button>
+      @if (dataSource.filter) {
+        <button 
+          mat-icon-button 
+          matSuffix 
+          (click)="applyFilter(''); searchInput.value=''" 
+          class="clear-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
     </mat-form-field>
   </div>
 
@@ -137,15 +138,23 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+        <tr mat-row 
+            *matRowDef="let row; columns: displayedColumns;" 
+            class="table-row"
+            tabindex="0"
+            (keydown.enter)="openEdit(row)"
+            [attr.aria-label]="row.name + ' - ' + ('accessibility.tableRowAction' | translate)"
+            role="row"></tr>
       </table>
 
       <!-- Empty State -->
-      <div class="empty-state" *ngIf="dataSource.data.length === 0">
-        <mat-icon class="empty-icon">inventory_2</mat-icon>
-        <p class="empty-title">{{ 'catalogs.empty' | translate }}</p>
-        <p class="empty-subtitle">{{ 'catalogs.emptySubtitle' | translate }}</p>
-      </div>
+      @if (dataSource.data.length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">inventory_2</mat-icon>
+          <p class="empty-title">{{ 'catalogs.empty' | translate }}</p>
+          <p class="empty-subtitle">{{ 'catalogs.emptySubtitle' | translate }}</p>
+        </div>
+      }
     </div>
 
     <!-- Paginator -->

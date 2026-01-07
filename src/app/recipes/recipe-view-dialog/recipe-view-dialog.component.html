@@ -2,27 +2,35 @@
 
 <mat-dialog-content class="view-content">
   <!-- Foto debajo del título -->
-  <div class="image-container" *ngIf="recipe?.imageUrl">
-    <img [src]="recipe!.imageUrl" [alt]="recipe!.name" class="recipe-image">
-  </div>
+  @if (recipe?.imageUrl) {
+    <div class="image-container">
+      <img [src]="recipe!.imageUrl" [alt]="recipe!.name" class="recipe-image">
+    </div>
+  }
 
   <!-- Ingredientes -->
-  <div class="field-section" *ngIf="recipe?.ingredients">
-    <h3 class="field-title">{{ 'recipes.ingredients' | translate }}</h3>
-    <p class="field-text">{{ recipe!.ingredients }}</p>
-  </div>
+  @if (recipe?.ingredients) {
+    <div class="field-section">
+      <h3 class="field-title">{{ 'recipes.ingredients' | translate }}</h3>
+      <p class="field-text">{{ recipe!.ingredients }}</p>
+    </div>
+  }
 
   <!-- Preparación -->
-  <div class="field-section" *ngIf="recipe?.preparation">
-    <h3 class="field-title">{{ 'recipes.preparation' | translate }}</h3>
-    <p class="field-text">{{ recipe!.preparation }}</p>
-  </div>
+  @if (recipe?.preparation) {
+    <div class="field-section">
+      <h3 class="field-title">{{ 'recipes.preparation' | translate }}</h3>
+      <p class="field-text">{{ recipe!.preparation }}</p>
+    </div>
+  }
 
   <!-- Fecha de programación -->
-  <div class="field-section" *ngIf="recipe?.scheduledAt">
-    <h3 class="field-title">{{ 'recipes.scheduledAt' | translate }}</h3>
-    <p class="field-text">{{ recipe!.scheduledAt | date:'fullDate' }}</p>
-  </div>
+  @if (recipe?.scheduledAt) {
+    <div class="field-section">
+      <h3 class="field-title">{{ 'recipes.scheduledAt' | translate }}</h3>
+      <p class="field-text">{{ recipe!.scheduledAt | date:'fullDate' }}</p>
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

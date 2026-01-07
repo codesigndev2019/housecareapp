@@ -60,7 +60,8 @@
     "catalogsSection": "Catalogs",
     "recipesSection": "Recipes",
     "eventsSection": "Events",
-    "dashboardSection": "Dashboard"
+    "dashboardSection": "Dashboard",
+    "budgetSection": "Budget"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -68,6 +69,9 @@
     "eventsSection": "Events This Week",
     "recipesSection": "Scheduled Recipes",
     "choresSection": "Household Chores",
+    "budgetSection": "Financial Summary",
+    "budgetDistribution": "Budget Distribution",
+    "budgetComparison": "Income vs Expenses",
     "noEvents": "No events scheduled this week",
     "noRecipes": "No recipes scheduled this week",
     "noChores": "No pending chores"
@@ -163,6 +167,7 @@
     "undo": "Undo",
     "edit": "Edit",
     "view": "View",
+    "delete": "Delete",
     "deactivate": "Deactivate",
     "activate": "Activate",
     "close": "Close",
@@ -237,5 +242,68 @@
     "resetForm": "Password reset form",
     "verifyForm": "Verification form",
     "formFields": "Form fields"
+  },
+  "accessibility": {
+    "skipToContent": "Skip to main content",
+    "mainContent": "Main content",
+    "navigation": "Main navigation",
+    "loading": "Loading content",
+    "tableRowAction": "Press Enter to edit"
+  },
+  "upload": {
+    "dropZone": "File upload area",
+    "dragAndDrop": "Drag and drop files here",
+    "orClickToBrowse": "or click to browse",
+    "maxFilesReached": "Maximum files limit reached",
+    "maxSize": "Max size",
+    "maxFiles": "Max files",
+    "remaining": "Remaining",
+    "existingFiles": "Current files",
+    "existingImage": "Existing image",
+    "newFiles": "New files",
+    "removeFile": "Remove file",
+    "clearAll": "Clear all",
+    "tooManyFiles": "Too many files selected",
+    "invalidType": "Invalid file type",
+    "fileTooLarge": "File is too large"
+  },
+  "budget": {
+    "title": "Budget",
+    "subtitle": "Manage household income and expenses",
+    "add": "Add Movement",
+    "createTitle": "New Movement",
+    "editTitle": "Edit Movement",
+    "viewTitle": "Movement Details",
+    "movementName": "Movement name",
+    "description": "Description",
+    "currency": "Currency",
+    "amount": "Amount",
+    "movementType": "Movement type",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "isFixed": "Fixed movement",
+    "isFixedHint": "Check if it's a recurring movement (e.g., salary, rent)",
+    "fixed": "Fixed",
+    "variable": "Variable",
+    "income": "Income",
+    "expense": "Expense",
+    "totalIncome": "Total Income",
+    "totalExpenses": "Total Expenses",
+    "balance": "Available Balance",
+    "searchPlaceholder": "Search movements...",
+    "empty": "No movements",
+    "emptySubtitle": "Add your first movement to get started",
+    "deleteConfirmTitle": "Confirm Delete",
+    "deleteConfirmMessage": "Are you sure you want to delete \"{name}\"?",
+    "messages": {
+      "created": "Movement \"{name}\" created.",
+      "updated": "Movement \"{name}\" updated.",
+      "deleted": "Movement \"{name}\" deleted."
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "amountRequired": "Amount is required",
+      "amountMin": "Amount must be greater than 0"
+    }
   }
 }
