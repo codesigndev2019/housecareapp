@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,25 +11,34 @@ import { Recipe } from '../models/recipe.model';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './recipe-card.component.html',
-  styleUrls: ['./recipe-card.component.scss']
+  styleUrls: ['./recipe-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecipeCardComponent {
-  @Input() recipe!: Recipe;
-  @Input() showActions = true;
+  /** The recipe to display */
+  recipe = input.required<Recipe>();
 
-  @Output() view = new EventEmitter<Recipe>();
-  @Output() edit = new EventEmitter<Recipe>();
-  @Output() toggleActive = new EventEmitter<Recipe>();
+  /** Whether to show action buttons */
+  showActions = input<boolean>(true);
 
-  onView() {
-    this.view.emit(this.recipe);
+  /** Emits when view is requested */
+  view = output<Recipe>();
+
+  /** Emits when edit is requested */
+  edit = output<Recipe>();
+
+  /** Emits when toggle active is requested */
+  toggleActive = output<Recipe>();
+
+  onView(): void {
+    this.view.emit(this.recipe());
   }
 
-  onEdit() {
-    this.edit.emit(this.recipe);
+  onEdit(): void {
+    this.edit.emit(this.recipe());
   }
 
-  onToggleActive() {
-    this.toggleActive.emit(this.recipe);
+  onToggleActive(): void {
+    this.toggleActive.emit(this.recipe());
   }
 }

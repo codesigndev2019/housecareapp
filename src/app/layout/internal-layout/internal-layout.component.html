@@ -1,48 +1,55 @@
 <mat-sidenav-container class="layout-sidenav-container">
   <mat-sidenav #s mode="side" [(opened)]="opened" class="layout-sidenav">
     <div class="sidenav-header">
-      <h3 i18nText="layout.appTitle"></h3>
+      <h3>{{ 'layout.appTitle' | translate }}</h3>
     </div>
     <mat-nav-list>
       <a mat-list-item routerLink="/app/dashboard" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">dashboard</mat-icon>
-          <span i18nText="layout.dashboardSection"></span>
+          <span>{{ 'layout.dashboardSection' | translate }}</span>
         </div>
       </a>
 
       <a mat-list-item routerLink="/app/family" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">people</mat-icon>
-          <span i18nText="layout.familySection"></span>
+          <span>{{ 'layout.familySection' | translate }}</span>
         </div>
       </a>
 
       <a mat-list-item routerLink="/app/chores" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">cleaning_services</mat-icon>
-          <span i18nText="layout.choresSection"></span>
+          <span>{{ 'layout.choresSection' | translate }}</span>
         </div>
       </a>
 
       <a mat-list-item routerLink="/app/catalogs" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">list_alt</mat-icon>
-          <span i18nText="layout.catalogsSection"></span>
+          <span>{{ 'layout.catalogsSection' | translate }}</span>
         </div>
       </a>
 
       <a mat-list-item routerLink="/app/recipes" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">restaurant</mat-icon>
-          <span i18nText="layout.recipesSection"></span>
+          <span>{{ 'layout.recipesSection' | translate }}</span>
         </div>
       </a>
 
       <a mat-list-item routerLink="/app/events" routerLinkActive="active">
         <div class="nav-item-content">
           <mat-icon aria-hidden="true">event</mat-icon>
-          <span i18nText="layout.eventsSection"></span>
+          <span>{{ 'layout.eventsSection' | translate }}</span>
+        </div>
+      </a>
+
+      <a mat-list-item routerLink="/app/budget" routerLinkActive="active">
+        <div class="nav-item-content">
+          <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+          <span>{{ 'layout.budgetSection' | translate }}</span>
         </div>
       </a>
     </mat-nav-list>
@@ -68,14 +75,18 @@
                   class="language-item">
             <span class="flag-container" [innerHTML]="getFlagSvg('es')"></span>
             <span class="language-text">{{ 'tools.spanish' | translate }}</span>
-            <mat-icon *ngIf="currentLanguage() === 'es'" class="menu-check">check_circle</mat-icon>
+            @if (currentLanguage() === 'es') {
+              <mat-icon class="menu-check">check_circle</mat-icon>
+            }
           </button>
           <button mat-menu-item (click)="setLanguage('en')" 
                   [class.selected]="currentLanguage() === 'en'"
                   class="language-item">
             <span class="flag-container" [innerHTML]="getFlagSvg('en')"></span>
             <span class="language-text">{{ 'tools.english' | translate }}</span>
-            <mat-icon *ngIf="currentLanguage() === 'en'" class="menu-check">check_circle</mat-icon>
+            @if (currentLanguage() === 'en') {
+              <mat-icon class="menu-check">check_circle</mat-icon>
+            }
           </button>
         </div>
         <mat-divider class="menu-divider"></mat-divider>
@@ -99,11 +110,11 @@
           </div>
         </div>
       </mat-menu>
-      <button mat-button routerLink="/auth/login" i18nText="auth.logout" class="logout-button"></button>
+      <button mat-button routerLink="/auth/login" class="logout-button">{{ 'auth.logout' | translate }}</button>
     </mat-toolbar>
 
-    <div class="layout-main">
+    <main id="main-content" class="layout-main" role="main" [attr.aria-label]="'accessibility.mainContent' | translate">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>

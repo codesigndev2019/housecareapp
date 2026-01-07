@@ -1,7 +1,7 @@
 <div class="events-header">
   <div>
-    <h2 i18nText="events.title"></h2>
-    <p class="subtitle" i18nText="events.subtitle"></p>
+    <h2>{{ 'events.title' | translate }}</h2>
+    <p class="subtitle">{{ 'events.subtitle' | translate }}</p>
   </div>
   <div>
     <button mat-raised-button color="primary" (click)="openCreate()">{{ 'events.add' | translate }}</button>
@@ -9,10 +9,15 @@
 </div>
 
 <div class="events-list">
-  <ng-container *ngIf="events$ | async as events">
-    <div class="cards">
-      <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
-    </div>
-    <div *ngIf="!events?.length" class="empty" i18nText="events.empty"></div>
-  </ng-container>
+  @if (events$ | async; as events) {
+    @if (events.length) {
+      <div class="cards">
+        @for (ev of events; track ev.id) {
+          <app-event-card [event]="ev"></app-event-card>
+        }
+      </div>
+    } @else {
+      <div class="empty">{{ 'events.empty' | translate }}</div>
+    }
+  }
 </div>

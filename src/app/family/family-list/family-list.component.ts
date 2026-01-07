@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FamilyService } from '../family.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +6,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FamilyMemberDialogComponent } from '../family-member-dialog/family-member-dialog.component';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,9 +16,10 @@ import { FamilyMember } from '../models/family-member.model';
 @Component({
   selector: 'app-family-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MatDialogModule, MatTooltipModule, TranslatePipe, I18nTextDirective],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MatDialogModule, MatTooltipModule, TranslatePipe],
   templateUrl: './family-list.component.html',
-  styleUrls: ['./family-list.component.scss']
+  styleUrls: ['./family-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FamilyListComponent implements OnInit {
   members$!: Observable<FamilyMember[]>;

@@ -60,7 +60,8 @@
     "catalogsSection": "Catálogos",
     "recipesSection": "Recetas",
     "eventsSection": "Eventos",
-    "dashboardSection": "Panel"
+    "dashboardSection": "Panel",
+    "budgetSection": "Presupuesto"
   },
   "dashboard": {
     "title": "Panel de Control",
@@ -68,6 +69,9 @@
     "eventsSection": "Eventos de la Semana",
     "recipesSection": "Recetas Programadas",
     "choresSection": "Tareas del Hogar",
+    "budgetSection": "Resumen Financiero",
+    "budgetDistribution": "Distribución del Presupuesto",
+    "budgetComparison": "Ingresos vs Gastos",
     "noEvents": "No hay eventos programados esta semana",
     "noRecipes": "No hay recetas programadas esta semana",
     "noChores": "No hay tareas pendientes"
@@ -163,6 +167,7 @@
     "undo": "Deshacer",
     "edit": "Editar",
     "view": "Ver",
+    "delete": "Eliminar",
     "deactivate": "Desactivar",
     "activate": "Activar",
     "close": "Cerrar",
@@ -237,5 +242,68 @@
     "resetForm": "Formulario de recuperación",
     "verifyForm": "Formulario de verificación",
     "formFields": "Campos del formulario"
+  },
+  "accessibility": {
+    "skipToContent": "Saltar al contenido principal",
+    "mainContent": "Contenido principal",
+    "navigation": "Navegación principal",
+    "loading": "Cargando contenido",
+    "tableRowAction": "Presiona Enter para editar"
+  },
+  "upload": {
+    "dropZone": "Área de carga de archivos",
+    "dragAndDrop": "Arrastra y suelta archivos aquí",
+    "orClickToBrowse": "o haz clic para explorar",
+    "maxFilesReached": "Límite máximo de archivos alcanzado",
+    "maxSize": "Tamaño máx",
+    "maxFiles": "Archivos máx",
+    "remaining": "Restantes",
+    "existingFiles": "Archivos actuales",
+    "existingImage": "Imagen existente",
+    "newFiles": "Nuevos archivos",
+    "removeFile": "Eliminar archivo",
+    "clearAll": "Limpiar todo",
+    "tooManyFiles": "Demasiados archivos seleccionados",
+    "invalidType": "Tipo de archivo no válido",
+    "fileTooLarge": "El archivo es demasiado grande"
+  },
+  "budget": {
+    "title": "Presupuesto",
+    "subtitle": "Administra los ingresos y gastos del hogar",
+    "add": "Agregar Movimiento",
+    "createTitle": "Nuevo Movimiento",
+    "editTitle": "Editar Movimiento",
+    "viewTitle": "Detalle del Movimiento",
+    "movementName": "Nombre del movimiento",
+    "description": "Descripción",
+    "currency": "Moneda",
+    "amount": "Monto",
+    "movementType": "Tipo de movimiento",
+    "category": "Categoría",
+    "selectCategory": "Seleccionar categoría",
+    "isFixed": "Movimiento fijo",
+    "isFixedHint": "Marcar si es un movimiento recurrente (ej: salario, alquiler)",
+    "fixed": "Fijo",
+    "variable": "Variable",
+    "income": "Ingreso",
+    "expense": "Gasto",
+    "totalIncome": "Ingresos Totales",
+    "totalExpenses": "Gastos Totales",
+    "balance": "Saldo Disponible",
+    "searchPlaceholder": "Buscar movimientos...",
+    "empty": "No hay movimientos",
+    "emptySubtitle": "Agrega tu primer movimiento para comenzar",
+    "deleteConfirmTitle": "Confirmar eliminación",
+    "deleteConfirmMessage": "¿Estás seguro de que deseas eliminar \"{name}\"?",
+    "messages": {
+      "created": "Movimiento \"{name}\" creado.",
+      "updated": "Movimiento \"{name}\" actualizado.",
+      "deleted": "Movimiento \"{name}\" eliminado."
+    },
+    "errors": {
+      "nameRequired": "El nombre es requerido",
+      "amountRequired": "El monto es requerido",
+      "amountMin": "El monto debe ser mayor a 0"
+    }
   }
 }

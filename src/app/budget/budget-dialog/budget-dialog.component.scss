@@ -1,0 +1,108 @@
+.dialog-container {
+  min-width: 400px;
+  max-width: 560px;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-surface-border);
+  background: var(--color-surface-elevated);
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .close-btn {
+    color: var(--text-muted);
+  }
+}
+
+.dialog-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+
+  .currency-field {
+    flex: 0 0 140px;
+  }
+
+  .amount-field {
+    flex: 1;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .currency-field,
+    .amount-field {
+      flex: 1;
+      width: 100%;
+    }
+  }
+}
+
+.toggle-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+
+  .toggle-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 3rem;
+  }
+}
+
+.type-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .income-icon {
+    color: var(--color-success, #4caf50);
+  }
+
+  .expense-icon {
+    color: var(--color-error, #f44336);
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-surface-border);
+  background: var(--color-surface);
+}
+
+mat-form-field {
+  mat-icon[matPrefix] {
+    margin-right: 0.5rem;
+    color: var(--text-muted);
+  }
+}

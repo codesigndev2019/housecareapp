@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -12,12 +12,19 @@ import { FamilyService } from '../../family/family.service';
 import { FamilyMember } from '../../family/models/family-member.model';
 import { Chore, ChoreFrequency } from '../models/chore.model';
 import { Observable } from 'rxjs';
+import { BaseDialogComponent, DialogData } from '../../shared/base/base-dialog.component';
 
-export interface ChoreDialogData {
+/** Dialog data specific to ChoreDialog */
+export interface ChoreDialogData extends DialogData<Chore> {
   mode: 'create' | 'edit' | 'view';
   chore?: Chore;
 }
 
+/**
+ * ChoreDialogComponent - Dialog for creating/editing/viewing chores
+ *
+ * Extends BaseDialogComponent for common dialog functionality
+ */
 @Component({
   selector: 'app-chore-dialog',
   standalone: true,
@@ -35,40 +42,48 @@ export interface ChoreDialogData {
   templateUrl: './chore-dialog.component.html',
   styleUrls: ['./chore-dialog.component.scss']
 })
-export class ChoreDialogComponent implements OnInit {
-  form!: FormGroup;
-  familyMembers$: Observable<FamilyMember[]>;
-  isViewMode = false;
+export class ChoreDialogComponent extends BaseDialogComponent<Chore, ChoreDialogData> {
+  private readonly familyService = inject(FamilyService);
 
-  frequencies: { value: ChoreFrequency; labelKey: string }[] = [
+  /** Observable of family members for responsible selection */
+  familyMembers$: Observable<FamilyMember[]> = this.familyService.list();
+
+  /** Available frequency options */
+  readonly frequencies: { value: ChoreFrequency; labelKey: string }[] = [
     { value: 'daily', labelKey: 'chores.daily' },
     { value: 'twice-weekly', labelKey: 'chores.twiceWeekly' },
     { value: 'weekly', labelKey: 'chores.weekly' }
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ChoreDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ChoreDialogData,
-    private familyService: FamilyService
-  ) {
-    this.familyMembers$ = this.familyService.list();
-    this.isViewMode = data.mode === 'view';
+  /**
+   * Create the form structure for chores
+   */
+  protected createForm(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      responsibleId: [''],
+      frequency: ['weekly', Validators.required]
+    });
   }
 
-  ngOnInit() {
-    this.form = this.fb.group({
-      name: [this.data.chore?.name || '', Validators.required],
-      responsibleId: [this.data.chore?.responsibleId || ''],
-      frequency: [this.data.chore?.frequency || 'weekly', Validators.required]
-    });
-
-    if (this.isViewMode) {
-      this.form.disable();
+  /**
+   * Initialize form with chore data (for edit/view modes)
+   */
+  protected override initializeFormValues(): void {
+    const chore = this.data.chore || this.data.entity;
+    if (chore) {
+      this.form.patchValue({
+        name: chore.name,
+        responsibleId: chore.responsibleId,
+        frequency: chore.frequency
+      });
     }
   }
 
-  getTitle(): string {
+  /**
+   * Get the title key based on dialog mode
+   */
+  getTitleKey(): string {
     switch (this.data.mode) {
       case 'create': return 'chores.createTitle';
       case 'edit': return 'chores.editTitle';
@@ -77,15 +92,12 @@ export class ChoreDialogComponent implements OnInit {
     }
   }
 
-  onCancel() {
-    this.dialogRef.close();
+  /** Alias methods for template compatibility */
+  onCancel(): void {
+    this.cancel();
   }
 
-  onSave() {
-    if (this.form.invalid) return;
-    this.dialogRef.close({
-      action: 'save',
-      payload: this.form.value
-    });
+  onSave(): void {
+    this.save();
   }
 }

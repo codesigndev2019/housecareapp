@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ThemeService } from '../../core/services/theme.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -20,9 +19,10 @@ import { FLAGS } from '../../shared/constants/flags';
 @Component({
   selector: 'app-internal-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatButtonModule, MatMenuModule, MatDividerModule, MatSlideToggleModule, TranslatePipe, I18nTextDirective],
+  imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatButtonModule, MatMenuModule, MatDividerModule, MatSlideToggleModule, TranslatePipe],
   templateUrl: './internal-layout.component.html',
-  styleUrls: ['./internal-layout.component.scss']
+  styleUrls: ['./internal-layout.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternalLayoutComponent {
   opened = true;

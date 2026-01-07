@@ -2,8 +2,8 @@
   <mat-card class="auth-card">
     <div class="auth-content">
       <div class="auth-hero-text">
-        <h1 class="auth-title" i18nText="auth.register.title"></h1>
-        <p class="auth-sub" i18nText="auth.register.subtitle"></p>
+        <h1 class="auth-title">{{ 'auth.register.title' | translate }}</h1>
+        <p class="auth-sub">{{ 'auth.register.subtitle' | translate }}</p>
       </div>
       @if (errorMessage()) {
         <div class="error-message" role="alert" aria-live="assertive">

@@ -1,36 +1,38 @@
 <div class="family-list">
   <div class="family-header">
-    <h2 i18nText="family.title"></h2>
-    <button mat-flat-button color="primary" (click)="openCreate()" i18nText="family.add"></button>
+    <h2>{{ 'family.title' | translate }}</h2>
+    <button mat-flat-button color="primary" (click)="openCreate()">{{ 'family.add' | translate }}</button>
   </div>
 
   <div class="cards">
-    <mat-card *ngFor="let m of (members$ | async)" class="member-card" [class.inactive]="!m.active">
-      <div class="card-head">
-        <div class="left">
-          <div class="avatar">{{ m.fullName.charAt(0) }}</div>
-          <div class="details">
-            <h3>{{ m.fullName }}</h3>
-            <div class="badges">
-              <span class="chip">{{ m.relation }}</span>
-              <span class="chip">{{ m.accountType === 'editor' ? ('family.editor' | translate) : ('family.readOnly' | translate) }}</span>
+    @for (m of members$ | async; track m.id) {
+      <mat-card class="member-card" [class.inactive]="!m.active">
+        <div class="card-head">
+          <div class="left">
+            <div class="avatar">{{ m.fullName.charAt(0) }}</div>
+            <div class="details">
+              <h3>{{ m.fullName }}</h3>
+              <div class="badges">
+                <span class="chip">{{ m.relation }}</span>
+                <span class="chip">{{ m.accountType === 'editor' ? ('family.editor' | translate) : ('family.readOnly' | translate) }}</span>
+              </div>
+              <p class="meta">{{ m.email }} • {{ m.phone }}</p>
             </div>
-            <p class="meta">{{ m.email }} • {{ m.phone }}</p>
+          </div>
+          <div class="actions">
+            <button mat-icon-button color="primary" (click)="edit(m)" [attr.aria-label]="'actions.edit' | translate" [matTooltip]="'actions.edit' | translate" matTooltipPosition="above">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button [ngClass]="m.active ? 'deactivate' : 'activate'" (click)="m.active ? deactivate(m.id) : activate(m.id)" [attr.aria-label]="(m.active ? 'actions.deactivate' : 'actions.activate') | translate" [matTooltip]="(m.active ? 'actions.deactivate' : 'actions.activate') | translate" matTooltipPosition="above">
+              <mat-icon>{{ m.active ? 'block' : 'check_circle' }}</mat-icon>
+            </button>
           </div>
         </div>
-        <div class="actions">
-          <button mat-icon-button color="primary" (click)="edit(m)" [attr.aria-label]="'actions.edit' | translate" [matTooltip]="'actions.edit' | translate" matTooltipPosition="above">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button [ngClass]="m.active ? 'deactivate' : 'activate'" (click)="m.active ? deactivate(m.id) : activate(m.id)" [attr.aria-label]="(m.active ? 'actions.deactivate' : 'actions.activate') | translate" [matTooltip]="(m.active ? 'actions.deactivate' : 'actions.activate') | translate" matTooltipPosition="above">
-            <mat-icon>{{ m.active ? 'block' : 'check_circle' }}</mat-icon>
-          </button>
-        </div>
-      </div>
 
-      <mat-card-content>
-        <p class="info">{{ 'family.birth' | translate }}: {{ m.birthday | date:'mediumDate' }}</p>
-      </mat-card-content>
-    </mat-card>
+        <mat-card-content>
+          <p class="info">{{ 'family.birth' | translate }}: {{ m.birthday | date:'mediumDate' }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, OnInit, inject, signal, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,6 @@ import { AuthService } from '../services/auth.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { PasswordStrengthComponent } from '../components/password-strength/password-strength.component';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
 
 @Component({
   selector: 'app-register',
@@ -34,12 +33,12 @@ import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
     MatDatepickerModule,
     MatNativeDateModule,
     PasswordStrengthComponent,
-    TranslatePipe,
-    I18nTextDirective
+    TranslatePipe
   ],
   schemas: [NO_ERRORS_SCHEMA],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);

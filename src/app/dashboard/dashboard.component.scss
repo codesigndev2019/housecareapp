@@ -1,10 +1,256 @@
-:host{display:block;padding:1.5rem}
-.dashboard-header{display:flex;flex-direction:column;gap:0.25rem;margin-bottom:1rem}
-.sections{display:grid;grid-template-columns:1fr;gap:1.5rem}
-.section h3{margin:0 0 0.5rem;font-size:1.1rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
-.card-inner{height:100%;display:flex;flex-direction:column}
-mat-card-content{flex:1}
-.meta{font-size:0.9rem;opacity:0.85;margin-bottom:0.5rem}
-.empty{padding:1.5rem;text-align:center;color:rgba(0,0,0,0.5)}
-@media (min-width:980px){.sections{grid-template-columns:1fr 1fr}}
+:host {
+  display: block;
+  padding: 1.5rem;
+  background: var(--color-background);
+  min-height: 100%;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+  }
+
+  .subtitle {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+}
+
+// =============================================
+// BUDGET SECTION
+// =============================================
+.budget-section {
+  margin-bottom: 2rem;
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.budget-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// Budget Summary Cards
+.budget-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.budget-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--color-surface-border);
+  box-shadow: var(--elevation-sm);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--elevation-md);
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md, 8px);
+
+    mat-icon {
+      font-size: 1.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .card-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  // Income Card
+  &.income {
+    .card-icon {
+      background: rgba(76, 175, 80, 0.1);
+
+      mat-icon {
+        color: #4caf50;
+      }
+    }
+
+    .card-value {
+      color: #4caf50;
+    }
+  }
+
+  // Expense Card
+  &.expense {
+    .card-icon {
+      background: rgba(244, 67, 54, 0.1);
+
+      mat-icon {
+        color: #f44336;
+      }
+    }
+
+    .card-value {
+      color: #f44336;
+    }
+  }
+
+  // Balance Card
+  &.balance {
+    &.positive {
+      .card-icon {
+        background: rgba(33, 150, 243, 0.1);
+
+        mat-icon {
+          color: #2196f3;
+        }
+      }
+
+      .card-value {
+        color: #2196f3;
+      }
+    }
+
+    &.negative {
+      .card-icon {
+        background: rgba(255, 152, 0, 0.1);
+
+        mat-icon {
+          color: #ff9800;
+        }
+      }
+
+      .card-value {
+        color: #ff9800;
+      }
+    }
+  }
+}
+
+// Budget Charts
+.budget-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-container {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--color-surface-border);
+  box-shadow: var(--elevation-sm);
+  padding: 1.5rem;
+
+  h4 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .chart-wrapper {
+    position: relative;
+    height: 280px;
+    width: 100%;
+  }
+}
+
+// =============================================
+// SECTIONS GRID
+// =============================================
+.sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.section {
+  h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card-content {
+  flex: 1;
+}
+
+.meta {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 0.5rem;
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg, 12px);
+  border: 1px dashed var(--color-surface-border);
+  grid-column: 1 / -1;
+}

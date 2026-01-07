@@ -16,22 +16,23 @@
   </div>
 
   <div class="cards-grid">
-    <ng-container *ngIf="recipes$ | async as recipes; else empty">
-      <app-recipe-card 
-        *ngFor="let r of recipes" 
-        [recipe]="r"
-        (view)="openView($event)"
-        (edit)="openEdit($event)"
-        (toggleActive)="toggleActive($event)">
-      </app-recipe-card>
-    </ng-container>
-
-    <ng-template #empty>
-      <div class="empty-state">
-        <p class="empty-title">{{ 'recipes.empty' | translate }}</p>
-        <p class="empty-subtitle">{{ 'recipes.emptySubtitle' | translate }}</p>
-        <button mat-stroked-button (click)="openEdit()">{{ 'actions.create' | translate }}</button>
-      </div>
-    </ng-template>
+    @if (recipes$ | async; as recipes) {
+      @if (recipes.length) {
+        @for (r of recipes; track r.id) {
+          <app-recipe-card 
+            [recipe]="r"
+            (view)="openView($event)"
+            (edit)="openEdit($event)"
+            (toggleActive)="toggleActive($event)">
+          </app-recipe-card>
+        }
+      } @else {
+        <div class="empty-state">
+          <p class="empty-title">{{ 'recipes.empty' | translate }}</p>
+          <p class="empty-subtitle">{{ 'recipes.emptySubtitle' | translate }}</p>
+          <button mat-stroked-button (click)="openEdit()">{{ 'actions.create' | translate }}</button>
+        </div>
+      }
+    }
   </div>
 </div>

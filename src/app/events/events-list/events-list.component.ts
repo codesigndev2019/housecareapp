@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EventsService } from '../events.service';
 import { Observable } from 'rxjs';
@@ -12,14 +12,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { I18nTextDirective } from '../../core/i18n/i18n-text.directive';
 
 @Component({
   selector: 'app-events-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDialogModule, MatChipsModule, EventCardComponent, TranslatePipe, I18nTextDirective],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDialogModule, MatChipsModule, EventCardComponent, TranslatePipe],
   templateUrl: './events-list.component.html',
-  styleUrls: ['./events-list.component.scss']
+  styleUrls: ['./events-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventsListComponent implements OnInit {
   events$: Observable<EventItem[]>;
