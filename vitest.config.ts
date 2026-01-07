@@ -7,15 +7,15 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['src/test-setup.ts'],
     include: ['src/**/*.spec.ts'],
-    testTimeout: 10000,      // 10 segundos máximo por test
-    hookTimeout: 10000,      // 10 segundos para beforeEach/afterEach
-    teardownTimeout: 5000,   // 5 segundos para cleanup
-    pool: 'threads',         // Usar threads para paralelizar
+    testTimeout: 10000,      // 10 seconds max per test
+    hookTimeout: 10000,      // 10 seconds for beforeEach/afterEach
+    teardownTimeout: 5000,   // 5 seconds for cleanup
+    pool: 'threads',         // Use threads for parallelization
     poolOptions: {
       threads: {
-        singleThread: false  // Permitir múltiples threads
+        singleThread: false  // Allow multiple threads
       }
     },
-    reporters: ['verbose']   // Mejor output en CI
+    reporters: ['verbose']   // Better output in CI
   }
-}); 
+});
