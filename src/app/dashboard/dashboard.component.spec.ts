@@ -1,13 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { of } from 'rxjs';
 import { firstValueFrom, take } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DashboardComponent } from './dashboard.component';
+import { EventsService } from '../events/events.service';
+import { RecipesService } from '../recipes/recipes.service';
+import { ChoresService } from '../chores/chores.service';
+import { BudgetService } from '../budget/budget.service';
+import { I18nService } from '../core/i18n/i18n.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let mockEventsService: { list: ReturnType<typeof vi.fn> };
   let mockRecipesService: { list: ReturnType<typeof vi.fn> };
   let mockChoresService: { list: ReturnType<typeof vi.fn>; toggleCompleted: ReturnType<typeof vi.fn> };
+  let mockBudgetService: { getSummary: ReturnType<typeof vi.fn> };
+  let mockI18nService: { instant: ReturnType<typeof vi.fn> };
 
   const mockEvents = [
     { id: 'e1', title: 'Event 1', date: new Date().toISOString().split('T')[0], time: '10:00' },
@@ -25,6 +34,13 @@ describe('DashboardComponent', () => {
     { id: 'c3', name: 'Chore 3', completed: false, active: true, frequency: 'daily' }
   ];
 
+  const mockBudgetSummary = {
+    totalIncome: 5000,
+    totalExpenses: 3000,
+    balance: 2000,
+    currency: 'USD'
+  };
+
   beforeEach(() => {
     mockEventsService = {
       list: vi.fn().mockReturnValue(of(mockEvents))
@@ -39,11 +55,33 @@ describe('DashboardComponent', () => {
       toggleCompleted: vi.fn().mockReturnValue(of({ ...mockChores[0], completed: true }))
     };
 
-    component = new DashboardComponent(
-      mockEventsService as any,
-      mockRecipesService as any,
-      mockChoresService as any
-    );
+    mockBudgetService = {
+      getSummary: vi.fn().mockReturnValue(of(mockBudgetSummary))
+    };
+
+    mockI18nService = {
+      instant: vi.fn().mockImplementation((key: string) => key)
+    };
+
+    TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        { provide: EventsService, useValue: mockEventsService },
+        { provide: RecipesService, useValue: mockRecipesService },
+        { provide: ChoresService, useValue: mockChoresService },
+        { provide: BudgetService, useValue: mockBudgetService },
+        { provide: I18nService, useValue: mockI18nService }
+      ]
+    });
+
+    // Create component in injection context
+    component = TestBed.runInInjectionContext(() => {
+      return new DashboardComponent(
+        mockEventsService as any,
+        mockRecipesService as any,
+        mockChoresService as any
+      );
+    });
   });
 
   describe('initialization', () => {
@@ -92,13 +130,31 @@ describe('DashboardComponent', () => {
         active: true,
         frequency: 'daily'
       }));
-      mockChoresService.list.mockReturnValue(of(manyChores));
+      const newMockChoresService = {
+        list: vi.fn().mockReturnValue(of(manyChores)),
+        toggleCompleted: vi.fn().mockReturnValue(of({ ...manyChores[0], completed: true }))
+      };
       
-      const newComponent = new DashboardComponent(
-        mockEventsService as any,
-        mockRecipesService as any,
-        mockChoresService as any
-      );
+      // Reconfigure TestBed with the new mock
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: EventsService, useValue: mockEventsService },
+          { provide: RecipesService, useValue: mockRecipesService },
+          { provide: ChoresService, useValue: newMockChoresService },
+          { provide: BudgetService, useValue: mockBudgetService },
+          { provide: I18nService, useValue: mockI18nService }
+        ]
+      });
+
+      const newComponent = TestBed.runInInjectionContext(() => {
+        return new DashboardComponent(
+          mockEventsService as any,
+          mockRecipesService as any,
+          newMockChoresService as any
+        );
+      });
 
       const chores = await firstValueFrom(newComponent.chores$.pipe(take(1)));
       expect(chores.length).toBeLessThanOrEqual(5);
