@@ -68,7 +68,7 @@ jobs:
         run: npm ci
       
       - name: Run tests with coverage
-        run: npm run test:ci -- --coverage
+        run: npm run test:ci
         env:
           CI: true
       
@@ -76,7 +76,7 @@ jobs:
         uses: codecov/codecov-action@v4
         if: always()
         with:
-          files: ./coverage/coverage-final.json
+          files: ./coverage/lcov.info
           flags: unittests
           name: codecov-housecareapp
         continue-on-error: true
